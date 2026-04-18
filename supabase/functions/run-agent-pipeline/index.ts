@@ -23,7 +23,7 @@ interface AgentSpec {
   scenarioFocus?: string;
 }
 
-const findingsSchema = (extraProps: Record<string, unknown> = {}) => ({
+const findingsSchema = (extraProps: Record<string, unknown> = {}, controlIds: string[] = []) => ({
   type: "object",
   properties: {
     summary: { type: "string", description: "1-2 sentence summary of overall findings." },
@@ -48,6 +48,13 @@ const findingsSchema = (extraProps: Record<string, unknown> = {}) => ({
             items: { type: "string" },
             description: "Refs like 'EU AI Act Art. 9', 'NIST AI RMF GOVERN-1.4', 'ISO 42001 6.1.2', 'HIPAA §164.312'.",
           },
+          aos_control_id: controlIds.length
+            ? {
+                type: "string",
+                enum: controlIds,
+                description: "Most relevant AOS control id from the active catalog. Pick the single best match.",
+              }
+            : { type: "string", description: "AOS control id if applicable." },
           recommendation: { type: "string" },
           ...extraProps,
         },
@@ -101,20 +108,27 @@ async function callGatewayWithTool(
   policyText: string,
   scenarios: string[],
   apiKey: string,
+  controlCatalog: Array<{ control_id: string; objective: string; domain: string }>,
 ) {
   const isScenario = agent.name === "Scenario Risk Analyst";
+  const controlIds = controlCatalog.map((c) => c.control_id);
   const toolParams = isScenario
     ? findingsSchema({
         scenario: {
           type: "string",
           enum: ["enterprise_oss", "healthcare_codegen", "generative_ip", "hr_behavior", "general"],
         },
-      })
-    : findingsSchema();
+      }, controlIds)
+    : findingsSchema({}, controlIds);
 
-  const userContent = isScenario
+  const catalogText = controlCatalog.length
+    ? "\n\n--- ACTIVE AOS CONTROL CATALOG (tag every finding with the most relevant control_id) ---\n" +
+      controlCatalog.map((c) => `${c.control_id} [${c.domain}] ${c.objective}`).join("\n")
+    : "";
+
+  const userContent = (isScenario
     ? `Selected scenarios: ${scenarios.join(", ") || "general"}\n\n--- POLICY-AS-CODE ---\n${policyText}`
-    : `--- POLICY-AS-CODE ---\n${policyText}`;
+    : `--- POLICY-AS-CODE ---\n${policyText}`) + catalogText;
 
   const body = {
     model: MODEL,
