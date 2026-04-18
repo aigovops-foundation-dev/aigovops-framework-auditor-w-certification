@@ -404,9 +404,23 @@ const Submit = () => {
             <h1 className="text-2xl font-semibold tracking-tight">New review</h1>
             <p className="text-sm text-muted-foreground">Submit a policy-as-code bundle for end-to-end agentic review.</p>
           </div>
-          <Button type="button" variant="outline" size="sm" onClick={loadSample}>
-            <Sparkles className="h-4 w-4 mr-1.5" /> Load sample
-          </Button>
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button type="button" variant="outline" size="sm">
+                <Sparkles className="h-4 w-4 mr-1.5" /> Load sample <ChevronDown className="h-4 w-4 ml-1" />
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end" className="w-72">
+              <DropdownMenuLabel>Pre-built policy presets</DropdownMenuLabel>
+              <DropdownMenuSeparator />
+              {PRESETS.map((p) => (
+                <DropdownMenuItem key={p.id} onClick={() => loadPreset(p)} className="flex flex-col items-start gap-0.5 py-2">
+                  <span className="text-sm font-medium">{p.label}</span>
+                  <span className="text-xs text-muted-foreground">{p.desc}</span>
+                </DropdownMenuItem>
+              ))}
+            </DropdownMenuContent>
+          </DropdownMenu>
         </div>
 
         <form onSubmit={submit} className="space-y-5">
