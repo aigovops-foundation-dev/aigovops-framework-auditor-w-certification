@@ -130,9 +130,15 @@ const Admin = () => {
   return (
     <AppShell>
       <div className="p-8 max-w-5xl mx-auto">
-        <div className="flex items-center gap-3 mb-1">
-          <UserCog className="h-6 w-6 text-primary" />
-          <h1 className="text-2xl font-semibold tracking-tight">Roles & access</h1>
+        <div className="flex items-start justify-between gap-4 mb-1">
+          <div className="flex items-center gap-3">
+            <UserCog className="h-6 w-6 text-primary" />
+            <h1 className="text-2xl font-semibold tracking-tight">Roles & access</h1>
+          </div>
+          <Button variant="outline" size="sm" onClick={seedDemo} disabled={seeding}>
+            {seeding ? <Loader2 className="h-4 w-4 mr-2 animate-spin" /> : <Sparkles className="h-4 w-4 mr-2" />}
+            Seed demo dataset
+          </Button>
         </div>
         <p className="text-sm text-muted-foreground mb-6">
           Assign reviewer or admin roles. Reviewers can approve/reject any review. Admins can manage roles.
