@@ -419,6 +419,15 @@ const PRESETS: Preset[] = [
     scenarios: ["enterprise_oss"],
     code: SAMPLE_ENTERPRISE_OSS_POLICY,
   },
+  {
+    id: "hr_eeoc",
+    label: "AI resume ranker (HR/EEOC)",
+    desc: "4/5 rule · NYC LL-144 · proxy detection · HITL",
+    title: "TalentForge — AI Resume Ranking Tool Policy v1.2",
+    description: "ML-assisted candidate ranking, US hiring. Title VII, ADEA, ADA, NYC LL-144, EEOC. Annual independent bias audit.",
+    scenarios: ["hr_behavior"],
+    code: SAMPLE_HR_EEOC_POLICY,
+  },
 ];
 
 const SCENARIOS: { id: Scenario; label: string; desc: string }[] = [
