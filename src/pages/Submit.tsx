@@ -250,7 +250,7 @@ const Submit = () => {
             </TabsList>
             <TabsContent value="paste">
               <Label className="mt-3 block">Policy code (Rego / YAML / JSON / Cedar)</Label>
-              <Textarea name="code" rows={12} className="font-mono text-xs" placeholder={'package aigovops.example\n\ndefault allow = false\n\nallow {\n  input.actor.role == "reviewer"\n}'} />
+              <Textarea name="code" rows={12} value={code} onChange={(e) => setCode(e.target.value)} className="font-mono text-xs" placeholder={'package aigovops.example\n\ndefault allow = false\n\nallow {\n  input.actor.role == "reviewer"\n}'} />
             </TabsContent>
             <TabsContent value="upload">
               <Label className="mt-3 block">Files (.rego, .yaml, .json, .cedar, .md)</Label>
