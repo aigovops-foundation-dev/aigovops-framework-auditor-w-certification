@@ -1,0 +1,7 @@
+project_id = "ijfimnclppgtlbitipst"
+
+[functions.run-agent-pipeline]
+verify_jwt = true
+
+[functions.github-fetch]
+verify_jwt = true
