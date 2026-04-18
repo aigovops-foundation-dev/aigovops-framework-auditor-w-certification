@@ -133,9 +133,9 @@ const Submit = () => {
     e.preventDefault();
     if (!user) return;
     const fd = new FormData(e.currentTarget);
-    const title = String(fd.get("title") ?? "").trim();
-    const description = String(fd.get("description") ?? "").trim();
-    if (!title) { toast.error("Title required"); return; }
+    const titleVal = title.trim();
+    const descVal = description.trim();
+    if (!titleVal) { toast.error("Title required"); return; }
     if (scenarios.length === 0) { toast.error("Select at least one scenario"); return; }
 
     setBusy(true);
@@ -144,7 +144,6 @@ const Submit = () => {
       let source_url: string | null = null;
 
       if (tab === "paste") {
-        const code = String(fd.get("code") ?? "");
         if (!code.trim()) throw new Error("Paste your policy code");
         artifacts = [{ file_path: "policy.rego", language: "rego", content: code.slice(0, 200_000) }];
       } else if (tab === "upload") {
