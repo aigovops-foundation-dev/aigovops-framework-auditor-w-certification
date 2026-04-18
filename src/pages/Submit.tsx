@@ -107,6 +107,24 @@ const Submit = () => {
   const [busy, setBusy] = useState(false);
   const [tab, setTab] = useState<"paste" | "upload" | "github">("paste");
   const [scenarios, setScenarios] = useState<Scenario[]>(["general"]);
+  const [code, setCode] = useState("");
+  const [title, setTitle] = useState("");
+  const [description, setDescription] = useState("");
+
+  const loadSample = () => {
+    setTab("paste");
+    setCode(SAMPLE_HEALTHCARE_POLICY);
+    if (!title) setTitle("Acme Health — Patient Triage Chatbot Policy v2.1");
+    if (!description) setDescription("LLM symptom triage assistant, US HIPAA scope. Quarterly clinical informatics review.");
+    setScenarios((cur) => {
+      const next = new Set(cur);
+      next.add("healthcare_codegen");
+      next.add("hr_behavior");
+      next.delete("general");
+      return Array.from(next) as Scenario[];
+    });
+    toast.success("Sample healthcare policy loaded");
+  };
 
   const toggle = (s: Scenario) =>
     setScenarios((cur) => cur.includes(s) ? cur.filter((x) => x !== s) : [...cur, s]);
