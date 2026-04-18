@@ -381,6 +381,169 @@ audit_required {
 retention_days := 1095  # 3 years per EEOC §1602.14
 `;
 
+const SAMPLE_SUPPORT_AGENT_POLICY = `package aigovops.support.agent
+
+# Vega Telecom — Generative Customer Support Agent Policy v0.9
+# Scope: LLM-powered chat agent with tool access (refund, account, knowledge base).
+# Owner: Trust & Safety + Customer Ops · Red-team review monthly.
+
+default allow = false
+
+# ---------------------------------------------------------------
+# Prompt injection defenses (OWASP LLM01)
+# ---------------------------------------------------------------
+suspicious_patterns := {
+  "ignore previous instructions",
+  "disregard the above",
+  "you are now",
+  "system prompt:",
+  "reveal your instructions",
+  "</system>",
+  "act as administrator"
+}
+
+deny[msg] {
+  some p
+  p := suspicious_patterns[_]
+  contains(lower(input.user_message), p)
+  msg := sprintf("Prompt-injection pattern detected: %q — sanitize or reject.", [p])
+}
+
+deny[msg] {
+  not input.guardrails.input_classifier_passed
+  msg := "Input failed Llama-Guard / NeMo classifier — block before LLM call."
+}
+
+deny[msg] {
+  input.user_message_token_count > 4000
+  msg := "User message exceeds 4k tokens — likely jailbreak payload."
+}
+
+# Untrusted content from tools (RAG docs, emails) must be sandboxed
+deny[msg] {
+  some t
+  t := input.tool_outputs[_]
+  t.source != "first_party_kb"
+  not t.delimited_as_untrusted
+  msg := sprintf("Tool output from %v not delimited as <untrusted/> — injection vector.", [t.source])
+}
+
+# ---------------------------------------------------------------
+# PII redaction (OWASP LLM06 — Sensitive Info Disclosure)
+# ---------------------------------------------------------------
+pii_categories := {"ssn", "credit_card", "dob", "passport", "drivers_license", "bank_account", "phone", "address", "email"}
+
+deny[msg] {
+  some c
+  c := pii_categories[_]
+  input.detected_pii[c] == true
+  not input.redaction.outbound_redacted
+  msg := sprintf("Detected %v in outbound message without redaction.", [c])
+}
+
+deny[msg] {
+  input.detected_pii.credit_card == true
+  input.action == "log_transcript"
+  not input.redaction.transcript_redacted
+  msg := "Credit card present in transcript log — must be redacted before persistence."
+}
+
+# Customer PII may never be sent to non-BAA model providers
+deny[msg] {
+  input.payload.contains_customer_pii == true
+  not input.model.provider_under_baa
+  msg := "Customer PII routed to model provider without signed BAA/DPA."
+}
+
+# ---------------------------------------------------------------
+# Tool-use guardrails (OWASP LLM07 — Insecure Plugin Design)
+# ---------------------------------------------------------------
+high_risk_tools := {"issue_refund", "cancel_subscription", "change_password", "delete_account", "send_email"}
+
+deny[msg] {
+  some t
+  t := input.tool_call.name
+  t in high_risk_tools
+  not input.tool_call.confirmed_by_human
+  msg := sprintf("High-risk tool %v invoked without human confirmation step.", [t])
+}
+
+deny[msg] {
+  input.tool_call.name == "issue_refund"
+  to_number(input.tool_call.args.amount) > 500
+  msg := "Refund > $500 requires supervisor approval."
+}
+
+deny[msg] {
+  input.tool_call.name == "issue_refund"
+  not input.tool_call.args.account_id == input.session.account_id
+  msg := "Refund target account mismatches authenticated session — reject (cross-account abuse)."
+}
+
+# Rate limit destructive tools
+deny[msg] {
+  input.tool_call.name in {"issue_refund", "cancel_subscription", "delete_account"}
+  input.session.tool_calls_last_hour[input.tool_call.name] >= 3
+  msg := sprintf("Rate limit exceeded for %v (>3/hour per session).", [input.tool_call.name])
+}
+
+# Tool allowlist — no shell, no arbitrary HTTP
+allowed_tools := {"kb_search", "account_lookup", "issue_refund", "cancel_subscription",
+  "create_ticket", "send_email", "change_password"}
+
+deny[msg] {
+  not input.tool_call.name in allowed_tools
+  msg := sprintf("Tool %v not on allowlist.", [input.tool_call.name])
+}
+
+# ---------------------------------------------------------------
+# Output safety
+# ---------------------------------------------------------------
+deny[msg] {
+  input.model_output.classifier_score.harmful > 0.5
+  msg := "Output flagged harmful by safety classifier — block."
+}
+
+deny[msg] {
+  input.model_output.contains_url
+  not input.model_output.urls_on_allowlist
+  msg := "Outbound URL not on company allowlist (phishing risk)."
+}
+
+# Hallucination guard — refunds/policies must cite KB
+deny[msg] {
+  input.intent in {"policy_question", "refund_eligibility"}
+  not input.model_output.cites_kb_doc
+  msg := "Policy/refund answer must cite an internal KB doc — no ungrounded responses."
+}
+
+# ---------------------------------------------------------------
+# Allowed actions
+# ---------------------------------------------------------------
+allow {
+  input.actor.role == "customer"
+  input.action == "chat"
+  input.guardrails.input_classifier_passed
+  not input.detected_pii_unredacted_outbound
+}
+
+allow {
+  input.actor.role == "agent"
+  input.action == "tool_call"
+  input.tool_call.name in allowed_tools
+  input.tool_call.confirmed_by_human
+}
+
+# ---------------------------------------------------------------
+# Audit & retention
+# ---------------------------------------------------------------
+audit_required {
+  input.action in {"chat", "tool_call", "escalate", "log_transcript"}
+}
+
+retention_days := 365  # 1 year, redacted transcripts only
+`;
+
 type Preset = {
   id: string;
   label: string;
