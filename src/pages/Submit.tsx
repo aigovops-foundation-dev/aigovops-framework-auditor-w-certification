@@ -202,18 +202,25 @@ const Submit = () => {
   return (
     <AppShell>
       <div className="p-8 max-w-3xl mx-auto">
-        <h1 className="text-2xl font-semibold tracking-tight">New review</h1>
-        <p className="text-sm text-muted-foreground mb-6">Submit a policy-as-code bundle for end-to-end agentic review.</p>
+        <div className="flex items-start justify-between gap-4 mb-6">
+          <div>
+            <h1 className="text-2xl font-semibold tracking-tight">New review</h1>
+            <p className="text-sm text-muted-foreground">Submit a policy-as-code bundle for end-to-end agentic review.</p>
+          </div>
+          <Button type="button" variant="outline" size="sm" onClick={loadSample}>
+            <Sparkles className="h-4 w-4 mr-1.5" /> Load sample
+          </Button>
+        </div>
 
         <form onSubmit={submit} className="space-y-5">
           <div className="grid md:grid-cols-2 gap-4">
             <div>
               <Label>Title</Label>
-              <Input name="title" required placeholder="e.g. OpenCLAW deployment policy v0.3" />
+              <Input name="title" required value={title} onChange={(e) => setTitle(e.target.value)} placeholder="e.g. OpenCLAW deployment policy v0.3" />
             </div>
             <div>
               <Label>Description (optional)</Label>
-              <Input name="description" placeholder="Context for reviewers" />
+              <Input name="description" value={description} onChange={(e) => setDescription(e.target.value)} placeholder="Context for reviewers" />
             </div>
           </div>
 
