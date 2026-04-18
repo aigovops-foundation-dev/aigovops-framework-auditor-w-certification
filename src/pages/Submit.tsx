@@ -10,9 +10,88 @@ import { Textarea } from "@/components/ui/textarea";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { Checkbox } from "@/components/ui/checkbox";
 import { toast } from "sonner";
-import { Loader2, GitBranch, FileCode, UploadCloud } from "lucide-react";
+import { Loader2, GitBranch, FileCode, UploadCloud, Sparkles } from "lucide-react";
 
 type Scenario = "enterprise_oss" | "healthcare_codegen" | "generative_ip" | "hr_behavior" | "general";
+
+const SAMPLE_HEALTHCARE_POLICY = `package aigovops.healthcare.triage_bot
+
+# Acme Health — Patient Triage Chatbot Policy v2.1
+# Scope: LLM-powered symptom triage assistant, US deployment (HIPAA).
+# Owner: Clinical Informatics · Reviewed quarterly.
+
+default allow = false
+
+# ---------------------------------------------------------------
+# Allowed actions
+# ---------------------------------------------------------------
+allow {
+  input.actor.role == "patient"
+  input.action == "submit_symptoms"
+  input.session.consent_acknowledged == true
+  not input.payload.contains_phi_freetext
+}
+
+allow {
+  input.actor.role == "clinician"
+  input.action in {"view_transcript", "override_triage", "escalate"}
+  input.actor.npi_verified == true
+}
+
+# ---------------------------------------------------------------
+# Hard denials — emergency routing
+# ---------------------------------------------------------------
+deny[msg] {
+  input.payload.red_flag_symptoms[_] == "chest_pain"
+  msg := "Emergency symptom detected — must route to 911 hand-off, never auto-triage."
+}
+
+deny[msg] {
+  input.payload.red_flag_symptoms[_] == "suicidal_ideation"
+  msg := "Crisis pathway required — route to 988 Lifeline, log to clinician queue."
+}
+
+# ---------------------------------------------------------------
+# PHI handling
+# ---------------------------------------------------------------
+phi_minimization {
+  input.payload.fields_collected == {"age_band", "symptom_codes", "duration_days"}
+}
+
+deny[msg] {
+  not phi_minimization
+  msg := "PHI minimization violated — only age_band, symptom_codes, duration_days permitted."
+}
+
+# Model output must never echo back identifiers
+deny[msg] {
+  input.model_output.contains_identifiers == true
+  msg := "Model leaked identifiers in response — block and log incident."
+}
+
+# ---------------------------------------------------------------
+# Audit & retention
+# ---------------------------------------------------------------
+audit_required {
+  input.action in {"submit_symptoms", "override_triage", "escalate"}
+}
+
+retention_days := 2555  # 7 years per HIPAA §164.316(b)(2)
+
+# ---------------------------------------------------------------
+# Model governance
+# ---------------------------------------------------------------
+deny[msg] {
+  input.model.version != input.approved_model.version
+  msg := sprintf("Unapproved model version %v — only %v is cleared for clinical use.",
+    [input.model.version, input.approved_model.version])
+}
+
+deny[msg] {
+  input.model.last_bias_eval_days_ago > 90
+  msg := "Bias evaluation stale (>90 days) — re-run EEOC/health-equity test suite."
+}
+`;
 
 const SCENARIOS: { id: Scenario; label: string; desc: string }[] = [
   { id: "enterprise_oss", label: "Enterprise OSS adoption", desc: "OpenCLAW, vector DBs, foundation models inside a regulated org." },
