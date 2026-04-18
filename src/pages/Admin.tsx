@@ -21,6 +21,18 @@ const Admin = () => {
   const [busy, setBusy] = useState<string | null>(null);
   const [adminCount, setAdminCount] = useState(0);
   const [claiming, setClaiming] = useState(false);
+  const [seeding, setSeeding] = useState(false);
+
+  const seedDemo = async () => {
+    if (!confirm("Seed demo dataset? Creates 1 firm, 2 demo QAGAs, 3 reviews. Safe to re-run.")) return;
+    setSeeding(true);
+    const { data, error } = await supabase.functions.invoke("seed-demo");
+    if (error) { toast.error(error.message); setSeeding(false); return; }
+    if (data?.error) { toast.error(data.error); setSeeding(false); return; }
+    toast.success(`Demo seeded — ${data?.reviewIds?.length ?? 0} reviews, ${data?.qagaIds?.length ?? 0} QAGAs`);
+    setSeeding(false);
+    load();
+  };
 
   const load = async () => {
     setLoading(true);
