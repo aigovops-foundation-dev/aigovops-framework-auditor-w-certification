@@ -88,7 +88,7 @@ const ReviewDetail = () => {
   if (!review) return <AppShell><div className="p-8 font-mono text-sm text-muted-foreground">loading…</div></AppShell>;
 
   const running = ["ingesting", "analyzing"].includes(review.status);
-  const byAgent = findings.reduce((acc: Record<string, any[]>, f) => {
+  const byAgent = findings.reduce<Record<string, any[]>>((acc, f) => {
     (acc[f.agent_name] ??= []).push(f); return acc;
   }, {});
 
