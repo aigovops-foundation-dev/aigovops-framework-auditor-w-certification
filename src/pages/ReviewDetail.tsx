@@ -8,7 +8,7 @@ import { Badge } from "@/components/ui/badge";
 import { Textarea } from "@/components/ui/textarea";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { toast } from "sonner";
-import { CheckCircle2, XCircle, RefreshCw, ShieldAlert, Loader2, FileText, ScanLine, Brain, Scale, FileLock, Activity } from "lucide-react";
+import { CheckCircle2, XCircle, RefreshCw, ShieldAlert, Loader2, FileText, ScanLine, Brain, Scale, FileLock, Activity, ShieldCheck, ShieldX } from "lucide-react";
 import { formatDistanceToNow } from "date-fns";
 
 const sevColor: Record<string, string> = {
@@ -36,6 +36,8 @@ const ReviewDetail = () => {
   const [audit, setAudit] = useState<any[]>([]);
   const [decision, setDecision] = useState("");
   const [busy, setBusy] = useState(false);
+  const [chain, setChain] = useState<{ ok: boolean; count: number; results?: Array<{ ok: boolean; reason?: string }> } | null>(null);
+  const [verifying, setVerifying] = useState(false);
 
   const load = useCallback(async () => {
     if (!id) return;
@@ -76,13 +78,24 @@ const ReviewDetail = () => {
     await supabase.from("reviews").update({
       status: verdict, decision_notes: decision, decided_by: user.id, decided_at: new Date().toISOString(),
     }).eq("id", id);
-    await supabase.from("audit_log").insert({
-      review_id: id, actor_id: user.id, actor_kind: "user",
-      event: `human.${verdict}`, payload: { notes: decision },
+    // Server signs and inserts the audit entry into the chain
+    await supabase.functions.invoke("sign-decision", {
+      body: { reviewId: id, event: `human.${verdict}`, payload: { notes: decision } },
     });
     setBusy(false);
-    toast.success(`Review ${verdict}`);
+    toast.success(`Review ${verdict} · audit entry signed`);
+    setChain(null);
     load();
+  };
+
+  const verify = async () => {
+    if (!id) return;
+    setVerifying(true);
+    const { data, error } = await supabase.functions.invoke("audit-verify", { body: { reviewId: id } });
+    setVerifying(false);
+    if (error) { toast.error(error.message); return; }
+    setChain(data);
+    toast[data.ok ? "success" : "error"](data.ok ? "Audit chain valid" : "Audit chain INVALID");
   };
 
   if (!review) return <AppShell><div className="p-8 font-mono text-sm text-muted-foreground">loading…</div></AppShell>;
