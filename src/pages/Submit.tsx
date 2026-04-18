@@ -314,19 +314,13 @@ const Submit = () => {
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
 
-  const loadSample = () => {
+  const loadPreset = (preset: Preset) => {
     setTab("paste");
-    setCode(SAMPLE_HEALTHCARE_POLICY);
-    if (!title) setTitle("Acme Health — Patient Triage Chatbot Policy v2.1");
-    if (!description) setDescription("LLM symptom triage assistant, US HIPAA scope. Quarterly clinical informatics review.");
-    setScenarios((cur) => {
-      const next = new Set(cur);
-      next.add("healthcare_codegen");
-      next.add("hr_behavior");
-      next.delete("general");
-      return Array.from(next) as Scenario[];
-    });
-    toast.success("Sample healthcare policy loaded");
+    setCode(preset.code);
+    setTitle(preset.title);
+    setDescription(preset.description);
+    setScenarios(preset.scenarios);
+    toast.success(`Loaded: ${preset.label}`);
   };
 
   const toggle = (s: Scenario) =>
