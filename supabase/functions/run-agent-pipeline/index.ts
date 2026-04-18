@@ -277,7 +277,7 @@ Deno.serve(async (req) => {
 
     for (const agent of AGENTS) {
       try {
-        const result = await callGatewayWithTool(agent, policyText, review.scenarios ?? [], apiKey, controlCatalog);
+        const result = await callGatewayWithTool(agent, policyText + scenarioPackText, review.scenarios ?? [], apiKey, controlCatalog);
         totalScore += result.score;
         agentsRun++;
 
