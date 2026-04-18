@@ -5,7 +5,7 @@ import { useRoles, AppRole } from "@/hooks/useRoles";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { toast } from "sonner";
-import { ShieldCheck, UserCog, Crown, Loader2, KeyRound, Sparkles } from "lucide-react";
+import { ShieldCheck, UserCog, Crown, Loader2, KeyRound, Sparkles, Trash2 } from "lucide-react";
 
 interface Member {
   id: string;
@@ -22,6 +22,7 @@ const Admin = () => {
   const [adminCount, setAdminCount] = useState(0);
   const [claiming, setClaiming] = useState(false);
   const [seeding, setSeeding] = useState(false);
+  const [unseeding, setUnseeding] = useState(false);
 
   const seedDemo = async () => {
     if (!confirm("Seed demo dataset? Creates 1 firm, 2 demo QAGAs, 3 reviews. Safe to re-run.")) return;
@@ -31,6 +32,17 @@ const Admin = () => {
     if (data?.error) { toast.error(data.error); setSeeding(false); return; }
     toast.success(`Demo seeded — ${data?.reviewIds?.length ?? 0} reviews, ${data?.qagaIds?.length ?? 0} QAGAs`);
     setSeeding(false);
+    load();
+  };
+
+  const unseedDemo = async () => {
+    if (!confirm("Delete ALL demo data (firm, QAGAs, reviews, findings, attestations, auth users tagged demo:seed-v1)? This cannot be undone.")) return;
+    setUnseeding(true);
+    const { data, error } = await supabase.functions.invoke("unseed-demo");
+    if (error) { toast.error(error.message); setUnseeding(false); return; }
+    if (data?.error) { toast.error(data.error); setUnseeding(false); return; }
+    toast.success("Demo dataset removed");
+    setUnseeding(false);
     load();
   };
 
@@ -135,10 +147,16 @@ const Admin = () => {
             <UserCog className="h-6 w-6 text-primary" />
             <h1 className="text-2xl font-semibold tracking-tight">Roles & access</h1>
           </div>
-          <Button variant="outline" size="sm" onClick={seedDemo} disabled={seeding}>
-            {seeding ? <Loader2 className="h-4 w-4 mr-2 animate-spin" /> : <Sparkles className="h-4 w-4 mr-2" />}
-            Seed demo dataset
-          </Button>
+          <div className="flex items-center gap-2">
+            <Button variant="outline" size="sm" onClick={seedDemo} disabled={seeding || unseeding}>
+              {seeding ? <Loader2 className="h-4 w-4 mr-2 animate-spin" /> : <Sparkles className="h-4 w-4 mr-2" />}
+              Seed demo dataset
+            </Button>
+            <Button variant="outline" size="sm" onClick={unseedDemo} disabled={seeding || unseeding} className="text-destructive hover:text-destructive">
+              {unseeding ? <Loader2 className="h-4 w-4 mr-2 animate-spin" /> : <Trash2 className="h-4 w-4 mr-2" />}
+              Unseed
+            </Button>
+          </div>
         </div>
         <p className="text-sm text-muted-foreground mb-6">
           Assign reviewer or admin roles. Reviewers can approve/reject any review. Admins can manage roles.
