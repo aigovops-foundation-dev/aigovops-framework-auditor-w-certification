@@ -203,23 +203,56 @@ const ReviewDetail = () => {
             ))}
           </TabsContent>
 
-          <TabsContent value="audit" className="mt-4">
-            <div className="rounded-lg border border-border bg-card-grad divide-y divide-border">
-              {audit.map((e) => (
-                <div key={e.id} className="px-4 py-2.5 flex items-start gap-3 text-sm">
-                  <Activity className="h-4 w-4 mt-0.5 text-muted-foreground shrink-0" />
-                  <div className="flex-1 min-w-0">
-                    <div className="flex items-center gap-2">
-                      <span className="font-mono text-xs text-primary">{e.event}</span>
-                      <span className="text-[10px] font-mono uppercase text-muted-foreground">{e.actor_kind}</span>
-                    </div>
-                    {Object.keys(e.payload ?? {}).length > 0 && (
-                      <pre className="text-[10px] font-mono text-muted-foreground mt-1 overflow-x-auto">{JSON.stringify(e.payload, null, 0)}</pre>
-                    )}
+          <TabsContent value="audit" className="mt-4 space-y-3">
+            <div className="rounded-lg border border-border bg-card-grad p-4 flex items-center justify-between">
+              <div className="flex items-center gap-2">
+                {chain ? (chain.ok
+                  ? <ShieldCheck className="h-5 w-5 text-primary" />
+                  : <ShieldX className="h-5 w-5 text-destructive" />)
+                  : <ShieldAlert className="h-5 w-5 text-muted-foreground" />}
+                <div>
+                  <div className="text-sm font-medium">
+                    {chain ? (chain.ok ? "Audit chain verified" : "Audit chain INVALID") : "HMAC-SHA256 signed audit chain"}
                   </div>
-                  <div className="text-[10px] font-mono text-muted-foreground shrink-0">{formatDistanceToNow(new Date(e.created_at), { addSuffix: true })}</div>
+                  <div className="text-[11px] font-mono text-muted-foreground">
+                    {chain ? `${chain.count} entries · ${chain.results?.filter(r => r.ok).length}/${chain.count} valid` : "Click verify to recompute every signature."}
+                  </div>
                 </div>
-              ))}
+              </div>
+              <Button onClick={verify} disabled={verifying} variant="outline" size="sm">
+                {verifying ? <Loader2 className="h-4 w-4 mr-1.5 animate-spin" /> : <ShieldCheck className="h-4 w-4 mr-1.5" />}
+                Verify chain
+              </Button>
+            </div>
+            <div className="rounded-lg border border-border bg-card-grad divide-y divide-border">
+              {audit.map((e, idx) => {
+                const verdict = chain?.results?.[audit.length - 1 - idx];
+                return (
+                  <div key={e.id} className="px-4 py-2.5 flex items-start gap-3 text-sm">
+                    <Activity className="h-4 w-4 mt-0.5 text-muted-foreground shrink-0" />
+                    <div className="flex-1 min-w-0">
+                      <div className="flex items-center gap-2 flex-wrap">
+                        <span className="font-mono text-xs text-primary">{e.event}</span>
+                        <span className="text-[10px] font-mono uppercase text-muted-foreground">{e.actor_kind}</span>
+                        {e.signature && (
+                          <span className="text-[10px] font-mono text-muted-foreground" title={`sig: ${e.signature}`}>
+                            sig:{e.signature.slice(0, 8)}…
+                          </span>
+                        )}
+                        {verdict && (
+                          verdict.ok
+                            ? <span className="text-[10px] font-mono text-primary">✓ valid</span>
+                            : <span className="text-[10px] font-mono text-destructive">✗ {verdict.reason}</span>
+                        )}
+                      </div>
+                      {Object.keys(e.payload ?? {}).length > 0 && (
+                        <pre className="text-[10px] font-mono text-muted-foreground mt-1 overflow-x-auto">{JSON.stringify(e.payload, null, 0)}</pre>
+                      )}
+                    </div>
+                    <div className="text-[10px] font-mono text-muted-foreground shrink-0">{formatDistanceToNow(new Date(e.created_at), { addSuffix: true })}</div>
+                  </div>
+                );
+              })}
             </div>
           </TabsContent>
 
