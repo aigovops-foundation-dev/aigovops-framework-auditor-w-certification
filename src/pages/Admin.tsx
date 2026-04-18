@@ -147,10 +147,16 @@ const Admin = () => {
             <UserCog className="h-6 w-6 text-primary" />
             <h1 className="text-2xl font-semibold tracking-tight">Roles & access</h1>
           </div>
-          <Button variant="outline" size="sm" onClick={seedDemo} disabled={seeding}>
-            {seeding ? <Loader2 className="h-4 w-4 mr-2 animate-spin" /> : <Sparkles className="h-4 w-4 mr-2" />}
-            Seed demo dataset
-          </Button>
+          <div className="flex items-center gap-2">
+            <Button variant="outline" size="sm" onClick={seedDemo} disabled={seeding || unseeding}>
+              {seeding ? <Loader2 className="h-4 w-4 mr-2 animate-spin" /> : <Sparkles className="h-4 w-4 mr-2" />}
+              Seed demo dataset
+            </Button>
+            <Button variant="outline" size="sm" onClick={unseedDemo} disabled={seeding || unseeding} className="text-destructive hover:text-destructive">
+              {unseeding ? <Loader2 className="h-4 w-4 mr-2 animate-spin" /> : <Trash2 className="h-4 w-4 mr-2" />}
+              Unseed
+            </Button>
+          </div>
         </div>
         <p className="text-sm text-muted-foreground mb-6">
           Assign reviewer or admin roles. Reviewers can approve/reject any review. Admins can manage roles.
