@@ -3,6 +3,7 @@ import { useParams, useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
 import { AppShell } from "@/components/AppShell";
+import { EngagementPanel } from "@/components/EngagementPanel";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Textarea } from "@/components/ui/textarea";
@@ -137,8 +138,13 @@ const ReviewDetail = () => {
             <TabsTrigger value="findings">Findings ({findings.length})</TabsTrigger>
             <TabsTrigger value="artifacts">Artifacts ({artifacts.length})</TabsTrigger>
             <TabsTrigger value="audit">Audit log ({audit.length})</TabsTrigger>
+            <TabsTrigger value="engagement">QAGA</TabsTrigger>
             <TabsTrigger value="decision">Decision</TabsTrigger>
           </TabsList>
+
+          <TabsContent value="engagement" className="mt-4">
+            <EngagementPanel reviewId={id!} />
+          </TabsContent>
 
           <TabsContent value="findings" className="mt-4 space-y-4">
             {running && findings.length === 0 && (
@@ -162,7 +168,12 @@ const ReviewDetail = () => {
                         <div className="flex items-start gap-3">
                           <Badge className={sevColor[f.severity]}>{f.severity}</Badge>
                           <div className="flex-1 min-w-0">
-                            <div className="font-medium text-sm">{f.title}</div>
+                            <div className="flex items-center gap-2 flex-wrap">
+                              <div className="font-medium text-sm">{f.title}</div>
+                              {f.aos_control_id && (
+                                <span className="text-[10px] font-mono px-1.5 py-0.5 rounded bg-primary/15 text-primary">{f.aos_control_id}</span>
+                              )}
+                            </div>
                             {f.scenario && <div className="text-[10px] font-mono uppercase text-warning mt-0.5">scenario: {f.scenario}</div>}
                             <div className="text-sm text-muted-foreground mt-1">{f.message}</div>
                             {f.evidence && (

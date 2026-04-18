@@ -23,7 +23,7 @@ interface AgentSpec {
   scenarioFocus?: string;
 }
 
-const findingsSchema = (extraProps: Record<string, unknown> = {}) => ({
+const findingsSchema = (extraProps: Record<string, unknown> = {}, controlIds: string[] = []) => ({
   type: "object",
   properties: {
     summary: { type: "string", description: "1-2 sentence summary of overall findings." },
@@ -48,6 +48,13 @@ const findingsSchema = (extraProps: Record<string, unknown> = {}) => ({
             items: { type: "string" },
             description: "Refs like 'EU AI Act Art. 9', 'NIST AI RMF GOVERN-1.4', 'ISO 42001 6.1.2', 'HIPAA §164.312'.",
           },
+          aos_control_id: controlIds.length
+            ? {
+                type: "string",
+                enum: controlIds,
+                description: "Most relevant AOS control id from the active catalog. Pick the single best match.",
+              }
+            : { type: "string", description: "AOS control id if applicable." },
           recommendation: { type: "string" },
           ...extraProps,
         },
@@ -101,20 +108,27 @@ async function callGatewayWithTool(
   policyText: string,
   scenarios: string[],
   apiKey: string,
+  controlCatalog: Array<{ control_id: string; objective: string; domain: string }>,
 ) {
   const isScenario = agent.name === "Scenario Risk Analyst";
+  const controlIds = controlCatalog.map((c) => c.control_id);
   const toolParams = isScenario
     ? findingsSchema({
         scenario: {
           type: "string",
           enum: ["enterprise_oss", "healthcare_codegen", "generative_ip", "hr_behavior", "general"],
         },
-      })
-    : findingsSchema();
+      }, controlIds)
+    : findingsSchema({}, controlIds);
 
-  const userContent = isScenario
+  const catalogText = controlCatalog.length
+    ? "\n\n--- ACTIVE AOS CONTROL CATALOG (tag every finding with the most relevant control_id) ---\n" +
+      controlCatalog.map((c) => `${c.control_id} [${c.domain}] ${c.objective}`).join("\n")
+    : "";
+
+  const userContent = (isScenario
     ? `Selected scenarios: ${scenarios.join(", ") || "general"}\n\n--- POLICY-AS-CODE ---\n${policyText}`
-    : `--- POLICY-AS-CODE ---\n${policyText}`;
+    : `--- POLICY-AS-CODE ---\n${policyText}`) + catalogText;
 
   const body = {
     model: MODEL,
@@ -161,6 +175,7 @@ async function callGatewayWithTool(
       frameworks?: string[];
       recommendation: string;
       scenario?: string;
+      aos_control_id?: string;
     }>;
   };
 }
@@ -216,13 +231,24 @@ Deno.serve(async (req) => {
         .map((a) => `# FILE: ${a.file_path} (${a.language ?? "text"})\n${a.content}`)
         .join("\n\n") || "(no artifacts)";
 
+    // Load active AOS catalog
+    const { data: activeVersionRow } = await admin
+      .from("aos_versions").select("id, version").eq("status", "active")
+      .order("created_at", { ascending: false }).limit(1).single();
+    const aosVersion: string = activeVersionRow?.version ?? "unspecified";
+    const { data: catalogRows } = await admin
+      .from("aos_controls").select("control_id, objective, domain")
+      .eq("version_id", activeVersionRow?.id ?? "00000000-0000-0000-0000-000000000000")
+      .order("control_id");
+    const controlCatalog = catalogRows ?? [];
+
     await admin.from("reviews").update({ status: "analyzing" }).eq("id", reviewId);
     await insertSignedAudit(admin, signingKey, {
       review_id: reviewId,
       actor_id: user.id,
       actor_kind: "system",
       event: "pipeline.start",
-      payload: { agents: AGENTS.map((a) => a.name) },
+      payload: { agents: AGENTS.map((a) => a.name), aos_version: aosVersion, controls_loaded: controlCatalog.length },
     });
 
     // Clear previous findings (re-runs)
@@ -233,7 +259,7 @@ Deno.serve(async (req) => {
 
     for (const agent of AGENTS) {
       try {
-        const result = await callGatewayWithTool(agent, policyText, review.scenarios ?? [], apiKey);
+        const result = await callGatewayWithTool(agent, policyText, review.scenarios ?? [], apiKey, controlCatalog);
         totalScore += result.score;
         agentsRun++;
 
@@ -248,6 +274,8 @@ Deno.serve(async (req) => {
           frameworks: f.frameworks ?? [],
           scenario: (f.scenario as string | undefined) ?? null,
           recommendation: f.recommendation,
+          aos_control_id: f.aos_control_id ?? null,
+          aos_version: aosVersion,
         }));
         if (rows.length) await admin.from("agent_findings").insert(rows);
 

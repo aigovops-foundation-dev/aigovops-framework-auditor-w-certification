@@ -12,6 +12,10 @@ import Submit from "./pages/Submit";
 import ReviewDetail from "./pages/ReviewDetail";
 import AuditLog from "./pages/AuditLog";
 import Admin from "./pages/Admin";
+import AosCatalog from "./pages/AosCatalog";
+import Registry from "./pages/Registry";
+import MyAssessor from "./pages/MyAssessor";
+import Firms from "./pages/Firms";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -26,11 +30,15 @@ const App = () => (
           <Routes>
             <Route path="/" element={<Landing />} />
             <Route path="/auth" element={<Auth />} />
+            <Route path="/registry" element={<Registry />} />
             <Route path="/dashboard" element={<ProtectedRoute><Dashboard /></ProtectedRoute>} />
             <Route path="/submit" element={<ProtectedRoute><Submit /></ProtectedRoute>} />
             <Route path="/review/:id" element={<ProtectedRoute><ReviewDetail /></ProtectedRoute>} />
             <Route path="/audit" element={<ProtectedRoute><AuditLog /></ProtectedRoute>} />
             <Route path="/admin" element={<ProtectedRoute><Admin /></ProtectedRoute>} />
+            <Route path="/aos" element={<ProtectedRoute><AosCatalog /></ProtectedRoute>} />
+            <Route path="/me/assessor" element={<ProtectedRoute><MyAssessor /></ProtectedRoute>} />
+            <Route path="/firms" element={<ProtectedRoute><Firms /></ProtectedRoute>} />
             <Route path="*" element={<NotFound />} />
           </Routes>
         </AuthProvider>

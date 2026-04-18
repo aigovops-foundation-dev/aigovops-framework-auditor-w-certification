@@ -3,7 +3,7 @@ import { ReactNode } from "react";
 import { useAuth } from "@/hooks/useAuth";
 import { useRoles } from "@/hooks/useRoles";
 import { Button } from "@/components/ui/button";
-import { LayoutDashboard, FilePlus2, Shield, LogOut, Activity, UserCog } from "lucide-react";
+import { LayoutDashboard, FilePlus2, Shield, LogOut, Activity, UserCog, BookOpen, Crown, Building2 } from "lucide-react";
 
 export const AppShell = ({ children }: { children: ReactNode }) => {
   const { user, signOut } = useAuth();
@@ -14,10 +14,15 @@ export const AppShell = ({ children }: { children: ReactNode }) => {
   const links = [
     { to: "/dashboard", label: "Reviews", icon: LayoutDashboard },
     { to: "/submit", label: "New Review", icon: FilePlus2 },
+    { to: "/aos", label: "AOS Catalog", icon: BookOpen },
+    { to: "/me/assessor", label: "My QAGA Path", icon: Crown },
     { to: "/audit", label: "Audit Log", icon: Activity },
-    ...(isAdmin ? [{ to: "/admin", label: "Roles & Access", icon: UserCog }] : []),
-    // Always show admin entry if no admin exists yet (bootstrap path) — page handles gating
-    ...(!isAdmin ? [{ to: "/admin", label: "Bootstrap Admin", icon: UserCog }] : []),
+    ...(isAdmin
+      ? [
+          { to: "/firms", label: "Firms (QAGAC)", icon: Building2 },
+          { to: "/admin", label: "Roles & Access", icon: UserCog },
+        ]
+      : [{ to: "/admin", label: "Bootstrap Admin", icon: UserCog }]),
   ];
 
   return (
