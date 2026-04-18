@@ -175,6 +175,7 @@ async function callGatewayWithTool(
       frameworks?: string[];
       recommendation: string;
       scenario?: string;
+      aos_control_id?: string;
     }>;
   };
 }
@@ -230,13 +231,24 @@ Deno.serve(async (req) => {
         .map((a) => `# FILE: ${a.file_path} (${a.language ?? "text"})\n${a.content}`)
         .join("\n\n") || "(no artifacts)";
 
+    // Load active AOS catalog
+    const { data: activeVersionRow } = await admin
+      .from("aos_versions").select("id, version").eq("status", "active")
+      .order("created_at", { ascending: false }).limit(1).single();
+    const aosVersion: string = activeVersionRow?.version ?? "unspecified";
+    const { data: catalogRows } = await admin
+      .from("aos_controls").select("control_id, objective, domain")
+      .eq("version_id", activeVersionRow?.id ?? "00000000-0000-0000-0000-000000000000")
+      .order("control_id");
+    const controlCatalog = catalogRows ?? [];
+
     await admin.from("reviews").update({ status: "analyzing" }).eq("id", reviewId);
     await insertSignedAudit(admin, signingKey, {
       review_id: reviewId,
       actor_id: user.id,
       actor_kind: "system",
       event: "pipeline.start",
-      payload: { agents: AGENTS.map((a) => a.name) },
+      payload: { agents: AGENTS.map((a) => a.name), aos_version: aosVersion, controls_loaded: controlCatalog.length },
     });
 
     // Clear previous findings (re-runs)
@@ -247,7 +259,7 @@ Deno.serve(async (req) => {
 
     for (const agent of AGENTS) {
       try {
-        const result = await callGatewayWithTool(agent, policyText, review.scenarios ?? [], apiKey);
+        const result = await callGatewayWithTool(agent, policyText, review.scenarios ?? [], apiKey, controlCatalog);
         totalScore += result.score;
         agentsRun++;
 
@@ -262,6 +274,8 @@ Deno.serve(async (req) => {
           frameworks: f.frameworks ?? [],
           scenario: (f.scenario as string | undefined) ?? null,
           recommendation: f.recommendation,
+          aos_control_id: f.aos_control_id ?? null,
+          aos_version: aosVersion,
         }));
         if (rows.length) await admin.from("agent_findings").insert(rows);
 
