@@ -348,21 +348,23 @@ export default function Feed() {
           <CardContent className="space-y-3">
             <CodeBlock
               lang="ts"
-              code={`import { fetchFeed, activeOnly, expiringWithinDays } from "@aigovops/verify";
-
-const feed = await fetchFeed({
-  host: "${(import.meta.env.VITE_SUPABASE_URL ?? "").replace(/\\/functions\\/v1$/, "") || "https://aigovops.example.com"}",
-  risk_tier: "high",
-  since:     "2026-01-01",
-});
-
-for (const a of activeOnly(feed)) {
-  if (a.risk_tier_disagreement) {
-    console.warn(\`[\${a.organization}] declared \${a.risk_tier_declared} but derived \${a.risk_tier_derived}\`);
-  }
-}
-
-const renewSoon = expiringWithinDays(feed, 30);`}
+              code={[
+                'import { fetchFeed, activeOnly, expiringWithinDays } from "@aigovops/verify";',
+                '',
+                'const feed = await fetchFeed({',
+                `  host: "${(import.meta.env.VITE_SUPABASE_URL ?? "").replace(/\/functions\/v1$/, "") || "https://aigovops.example.com"}",`,
+                '  risk_tier: "high",',
+                '  since:     "2026-01-01",',
+                '});',
+                '',
+                'for (const a of activeOnly(feed)) {',
+                '  if (a.risk_tier_disagreement) {',
+                '    console.warn(`[${a.organization}] declared ${a.risk_tier_declared} but derived ${a.risk_tier_derived}`);',
+                '  }',
+                '}',
+                '',
+                'const renewSoon = expiringWithinDays(feed, 30);',
+              ].join("\n")}
             />
             <div className="flex flex-wrap gap-2 pt-1">
               <a href={NPM_URL} target="_blank" rel="noreferrer">
