@@ -1,3 +1,4 @@
+import type { CSSProperties } from "react";
 import { Badge } from "@/components/ui/badge";
 import { EmptyState } from "@/components/ui/empty-state";
 import { ShieldCheck } from "lucide-react";
