@@ -46,6 +46,7 @@ const ReviewDetail = () => {
   const [chain, setChain] = useState<{ ok: boolean; count: number; results?: Array<{ ok: boolean; reason?: string }> } | null>(null);
   const [verifying, setVerifying] = useState(false);
   const [activeSlug, setActiveSlug] = useState<string | null>(null);
+  const [hiddenSeverities, setHiddenSeverities] = useState<Set<string>>(new Set());
 
   const load = useCallback(async () => {
     if (!id) return;
