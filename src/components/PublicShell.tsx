@@ -56,6 +56,7 @@ export function PublicShell({ children, eyebrow = "Review Framework", rightSlot,
             <div className="flex items-center gap-4">
               <Link to="/docs" className="hover:text-foreground">Docs</Link>
               <Link to="/developers" className="hover:text-foreground">Developers</Link>
+              <Link to="/feed" className="hover:text-foreground">Feed</Link>
               <Link to="/registry" className="hover:text-foreground">Registry</Link>
               <Link to="/donate" className="hover:text-foreground">Donate</Link>
               <a href={FOUNDATION.githubOrgUrl} target="_blank" rel="noreferrer" className="hover:text-foreground">GitHub</a>
