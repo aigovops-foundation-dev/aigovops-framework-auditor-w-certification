@@ -67,16 +67,34 @@ export function PublicShell({ children, eyebrow = "Review Framework", rightSlot,
         <div className="flex-1">{children}</div>
 
         <footer className="border-t border-border/60 py-6 mt-12 bg-background/40 backdrop-blur">
-          <div className="container max-w-6xl mx-auto flex flex-col md:flex-row items-center justify-between gap-3 text-xs text-muted-foreground font-mono">
-            <div>Stewarded by the {FOUNDATION.name} · Apache-2.0 · CC-BY-4.0 spec</div>
-            <div className="flex items-center gap-4 flex-wrap justify-center">
-              <Link to="/docs" className="hover:text-foreground transition-colors">Docs</Link>
-              <Link to="/docs/vocabulary" className="hover:text-foreground transition-colors">Vocabulary</Link>
-              <Link to="/developers" className="hover:text-foreground transition-colors">Developers</Link>
-              <Link to="/feed" className="hover:text-foreground transition-colors">Feed</Link>
-              <Link to="/registry" className="hover:text-foreground transition-colors">Registry</Link>
-              <Link to="/donate" className="hover:text-foreground transition-colors">Donate</Link>
-              <a href={FOUNDATION.githubOrgUrl} target="_blank" rel="noreferrer" className="hover:text-foreground transition-colors">GitHub</a>
+          <div className="container max-w-6xl mx-auto flex flex-col gap-3 text-xs text-muted-foreground font-mono">
+            <div className="flex flex-col md:flex-row items-center justify-between gap-3">
+              <div>
+                Stewarded by the{" "}
+                <a href={FOUNDATION.url} target="_blank" rel="noreferrer" className="hover:text-foreground transition-colors">
+                  {FOUNDATION.name}
+                </a>{" "}
+                · Apache-2.0 · CC-BY-4.0 spec
+              </div>
+              <div className="flex items-center gap-4 flex-wrap justify-center">
+                <Link to="/about" className="hover:text-foreground transition-colors">About</Link>
+                <Link to="/docs" className="hover:text-foreground transition-colors">Docs</Link>
+                <Link to="/docs/vocabulary" className="hover:text-foreground transition-colors">Vocabulary</Link>
+                <Link to="/developers" className="hover:text-foreground transition-colors">Developers</Link>
+                <Link to="/feed" className="hover:text-foreground transition-colors">Feed</Link>
+                <Link to="/registry" className="hover:text-foreground transition-colors">Registry</Link>
+                <Link to="/donate" className="hover:text-foreground transition-colors">Donate</Link>
+                <a href={FOUNDATION.githubOrgUrl} target="_blank" rel="noreferrer" className="hover:text-foreground transition-colors">GitHub</a>
+              </div>
+            </div>
+            <div className="text-center md:text-left text-[10px] opacity-80">
+              Co-founded by{" "}
+              {FOUNDATION.cofounders.map((c, i) => (
+                <span key={c.email}>
+                  {i > 0 && " · "}
+                  <span className="text-foreground/80">{c.name}</span> ({c.role})
+                </span>
+              ))}
             </div>
           </div>
         </footer>

@@ -1,14 +1,24 @@
 # Project Governance
 
-The AiGovOps Review Framework is stewarded by the **AiGovOps Foundation**,
-a nonprofit organization that publishes the AiGovOps Operational Standard
+The AiGovOps Review Framework is stewarded by the **[AiGovOps Foundation](https://www.aigovopsfoundation.org/)**,
+a vendor-neutral nonprofit that publishes the AiGovOps Operational Standard
 (AOS) and operates the reference instance of this framework.
+
+## Co-founders
+
+| Name | Role | Contact |
+|---|---|---|
+| **Bob Rapp** | Co-founder & Technical Steward | `bob.rapp@aigovops.community` |
+| **Ken Johnston** | Co-founder & Governance Steward | `ken.johnston@aigovops.community` |
+
+The co-founders chair the Foundation Board and serve as the escalation path
+for governance disputes that cannot be resolved by maintainer consensus.
 
 ## Roles
 
 ### Foundation Board
 Sets strategic direction, approves AOS major-version releases, and ratifies
-changes to this governance document.
+changes to this governance document. Co-chaired by the co-founders.
 
 ### Maintainers
 - Triage issues and pull requests
@@ -37,7 +47,7 @@ For larger changes (AOS additions, schema migrations, new edge functions):
 1. Open an RFC issue
 2. **14-day** discussion window minimum
 3. At least **2 maintainer approvals** required
-4. If unresolved, escalate to the Foundation Board
+4. If unresolved, escalate to the Foundation Board (co-founders CC'd)
 
 ## AOS Stewardship
 
@@ -63,4 +73,4 @@ endorsement of a fork or a competing service.
 ## Amendments
 
 This document may be amended by Foundation Board ratification of a PR with
-two maintainer approvals.
+two maintainer approvals. Material changes require co-founder sign-off.

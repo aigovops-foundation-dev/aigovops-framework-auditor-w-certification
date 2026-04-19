@@ -1,6 +1,8 @@
 # AiGovOps Review Framework — Product Requirements Document
 
-**Version:** 0.1 · **Status:** Draft · **Steward:** AiGovOps Foundation
+**Version:** 0.1 · **Status:** Draft · **Steward:** [AiGovOps Foundation](https://www.aigovopsfoundation.org/)
+
+**Co-founders:** Bob Rapp (Co-founder & Technical Steward, `bob.rapp@aigovops.community`) · Ken Johnston (Co-founder & Governance Steward, `ken.johnston@aigovops.community`)
 
 ## 1. Problem
 

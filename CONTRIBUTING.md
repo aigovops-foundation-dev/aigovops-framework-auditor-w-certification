@@ -1,8 +1,10 @@
 # Contributing to the AiGovOps Review Framework
 
 Thank you for your interest in contributing. This project is stewarded by the
-**AiGovOps Foundation** and welcomes contributions from anyone willing to abide
-by the [Code of Conduct](./CODE_OF_CONDUCT.md).
+**[AiGovOps Foundation](https://www.aigovopsfoundation.org/)** — co-founded by
+**Bob Rapp** (Technical Steward) and **Ken Johnston** (Governance Steward) — and
+welcomes contributions from anyone willing to abide by the
+[Code of Conduct](./CODE_OF_CONDUCT.md).
 
 ## Developer Certificate of Origin (DCO)
 

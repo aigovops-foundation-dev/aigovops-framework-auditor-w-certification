@@ -1,7 +1,34 @@
 {
-  "name": "vite_react_shadcn_ts",
+  "name": "aigovops-review-framework",
   "private": true,
-  "version": "0.0.0",
+  "version": "0.1.0",
+  "description": "Policy-as-code, reviewed by agents, attested by humans, sealed by a chain. The reference implementation of the AiGovOps Operational Standard (AOS).",
+  "license": "Apache-2.0",
+  "homepage": "https://www.aigovopsfoundation.org/",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/aigovopsfoundation/aigovops-review-framework.git"
+  },
+  "bugs": {
+    "url": "https://github.com/aigovopsfoundation/aigovops-review-framework/issues"
+  },
+  "author": "AiGovOps Foundation <hello@aigovopsfoundation.org> (https://www.aigovopsfoundation.org/)",
+  "contributors": [
+    "Bob Rapp <bob.rapp@aigovops.community> (Co-founder & Technical Steward)",
+    "Ken Johnston <ken.johnston@aigovops.community> (Co-founder & Governance Steward)"
+  ],
+  "keywords": [
+    "ai-governance",
+    "aos",
+    "ai-act",
+    "nist-ai-rmf",
+    "iso-42001",
+    "soc2",
+    "policy-as-code",
+    "attestation",
+    "audit-chain",
+    "qaga"
+  ],
   "type": "module",
   "scripts": {
     "dev": "vite",

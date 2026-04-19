@@ -4,7 +4,7 @@
  */
 
 export const FOUNDATION = {
-  name: "AIGovOps Foundation",
+  name: "AiGovOps Foundation",
   shortName: "AiGovOps",
   url: "https://www.aigovopsfoundation.org/",
   donateUrl: "https://www.aigovopsfoundation.org/donate",
@@ -13,6 +13,19 @@ export const FOUNDATION = {
   contactEmail: "hello@aigovopsfoundation.org",
   securityEmail: "security@aigovopsfoundation.org",
   donationsEmail: "donations@aigovopsfoundation.org",
+  /** Public co-founders. Source of truth for credits across docs and UI. */
+  cofounders: [
+    {
+      name: "Bob Rapp",
+      role: "Co-founder & Technical Steward",
+      email: "bob.rapp@aigovops.community",
+    },
+    {
+      name: "Ken Johnston",
+      role: "Co-founder & Governance Steward",
+      email: "ken.johnston@aigovops.community",
+    },
+  ],
 } as const;
 
 export const PROJECT = {

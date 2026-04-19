@@ -5,7 +5,12 @@
 If you discover a security vulnerability in the AiGovOps Review Framework,
 please report it privately. **Do not open a public GitHub issue.**
 
-**Email:** `security@aigovopsfoundation.org`
+**Primary email:** `security@aigovopsfoundation.org`
+
+**Co-founder escalation (CC both for high-severity reports):**
+- Bob Rapp — Co-founder & Technical Steward — `bob.rapp@aigovops.community`
+- Ken Johnston — Co-founder & Governance Steward — `ken.johnston@aigovops.community`
+
 **PGP key:** Available on request from the same address.
 
 We aim to:
@@ -46,4 +51,4 @@ Particular care is taken in these areas; reports here will be triaged first:
 ## Hall of Fame
 
 We publicly credit researchers who responsibly disclose. Let us know whether
-you'd like to be credited in `CHANGELOG.md` and on our website.
+you'd like to be credited in `CHANGELOG.md` and on the [AiGovOps Foundation](https://www.aigovopsfoundation.org/) website.
