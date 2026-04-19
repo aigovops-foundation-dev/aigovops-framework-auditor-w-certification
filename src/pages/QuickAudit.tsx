@@ -119,6 +119,22 @@ const QuickAudit = () => {
   const [overall, setOverall] = useState<number | null>(null);
   const [derivedTier, setDerivedTier] = useState<"medium" | "high" | "critical" | null>(null);
   const [lastRunAt, setLastRunAt] = useState<Date | null>(null);
+  const findingsRef = useRef<HTMLElement | null>(null);
+
+  // Auto-scroll to findings as soon as they arrive
+  useEffect(() => {
+    if (!busy && findings.length > 0 && findingsRef.current) {
+      findingsRef.current.scrollIntoView({ behavior: "smooth", block: "start" });
+    }
+  }, [busy, findings.length]);
+
+  // Verdict (RED/AMBER/GREEN) derived from overall score
+  const verdict = useMemo(() => {
+    if (overall === null) return null;
+    if (overall < 50) return { label: "RED", tone: "bg-destructive/15 text-destructive border-destructive/40" };
+    if (overall < 75) return { label: "AMBER", tone: "bg-warning/15 text-warning border-warning/40" };
+    return { label: "GREEN", tone: "bg-primary/15 text-primary border-primary/40" };
+  }, [overall]);
 
   // Cooldown: 1 free run / 24h (bypass for admin + curator)
   useEffect(() => {
