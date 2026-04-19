@@ -286,6 +286,7 @@ const Submit = () => {
             </Button>
           </div>
         </form>
+        </div>
       </div>
     </AppShell>
   );
