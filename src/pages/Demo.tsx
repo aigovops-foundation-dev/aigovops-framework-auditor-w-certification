@@ -29,6 +29,7 @@ const Demo = () => {
 
   const [idx, setIdx] = useState(0);
   const [paused, setPaused] = useState(false);
+  const [speed, setSpeed] = useState<0.5 | 1 | 2>(1);
   const timer = useRef<number | null>(null);
 
   useEffect(() => { setIdx(0); setPaused(false); }, [demo.id]);
@@ -38,9 +39,10 @@ const Demo = () => {
     const beat = demo.beats[idx];
     if (!beat) return;
     if (idx >= demo.beats.length - 1) return; // hold on the last beat
-    timer.current = window.setTimeout(() => setIdx((i) => i + 1), beat.dwell);
+    const dwell = Math.max(300, Math.round(beat.dwell / speed));
+    timer.current = window.setTimeout(() => setIdx((i) => i + 1), dwell);
     return () => { if (timer.current) window.clearTimeout(timer.current); };
-  }, [idx, paused, demo]);
+  }, [idx, paused, demo, speed]);
 
   const beat = demo.beats[idx];
   const total = demo.beats.length;
