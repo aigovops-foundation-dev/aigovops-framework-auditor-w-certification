@@ -137,13 +137,22 @@ export const PortraitStage = ({
 
   return (
     <div className={`relative overflow-hidden ${className ?? ""}`}>
+      {/* Aurora gradient backdrop — matches the rest of the design system */}
+      <div
+        aria-hidden
+        className="pointer-events-none absolute inset-0 -z-10"
+        style={{
+          background:
+            "radial-gradient(ellipse 80% 60% at 30% 30%, hsl(248 70% 22% / 0.85), transparent 60%), radial-gradient(ellipse 70% 60% at 75% 70%, hsl(160 70% 28% / 0.55), transparent 65%), linear-gradient(180deg, hsl(240 35% 6%), hsl(240 40% 4%))",
+        }}
+      />
       <Canvas
         shadows
         dpr={[1, 2]}
         camera={{ position: [0, 0.1, 4.6], fov: 38 }}
         onCreated={({ gl }) => {
           try {
-            gl.setClearColor(new THREE.Color("#0a0d18"), 1);
+            gl.setClearColor(new THREE.Color("#0a0d18"), 0); // transparent — let aurora show
           } catch {
             setGlError(true);
           }
