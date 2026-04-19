@@ -120,6 +120,15 @@ const About = () => {
                   <Github className="h-4 w-4 mr-1.5" /> GitHub org
                 </Button>
               </a>
+              <a
+                href="https://aigovopsfoundation.github.io/aigovops-review-framework/"
+                target="_blank"
+                rel="noreferrer"
+              >
+                <Button variant="secondary">
+                  <ExternalLink className="h-4 w-4 mr-1.5" /> View on GitHub Pages
+                </Button>
+              </a>
               <Link to="/donate">
                 <Button>
                   <Heart className="h-4 w-4 mr-1.5" /> Donate
