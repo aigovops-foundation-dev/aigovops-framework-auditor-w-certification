@@ -24,6 +24,8 @@ import { PersonaAvatar, PersonaStrip, NamedCameo } from "@/components/agents/Per
 import { personaBySlug } from "@/data/agent-personas";
 import { usePageMeta } from "@/hooks/usePageMeta";
 import { FOUNDATION, PROJECT, STANDARD } from "@/lib/config";
+import { JourneyStepper } from "@/components/journey/JourneyStepper";
+import { PersonaPathCards } from "@/components/journey/PersonaPathCards";
 
 const Landing = () => {
   usePageMeta({
