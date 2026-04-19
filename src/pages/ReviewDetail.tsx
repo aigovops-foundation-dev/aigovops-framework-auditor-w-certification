@@ -45,6 +45,7 @@ const ReviewDetail = () => {
   const [busy, setBusy] = useState(false);
   const [chain, setChain] = useState<{ ok: boolean; count: number; results?: Array<{ ok: boolean; reason?: string }> } | null>(null);
   const [verifying, setVerifying] = useState(false);
+  const [activeSlug, setActiveSlug] = useState<string | null>(null);
 
   const load = useCallback(async () => {
     if (!id) return;
@@ -70,6 +71,36 @@ const ReviewDetail = () => {
       return () => clearInterval(t);
     }
   }, [review, load]);
+
+  // Highlight active agent pill based on which group is in view
+  useEffect(() => {
+    if (findings.length === 0) return;
+    const slugs = Array.from(new Set(findings.map((f) => agentNameToSlug(f.agent_name))));
+    const elements = slugs
+      .map((slug) => document.getElementById(`agent-${slug}`))
+      .filter((el): el is HTMLElement => el !== null);
+    if (elements.length === 0) return;
+
+    const visibility = new Map<string, number>();
+    const observer = new IntersectionObserver(
+      (entries) => {
+        for (const entry of entries) {
+          const slug = entry.target.id.replace(/^agent-/, "");
+          visibility.set(slug, entry.intersectionRatio);
+        }
+        // Pick the slug with the highest intersection ratio (>0)
+        let bestSlug: string | null = null;
+        let bestRatio = 0;
+        for (const [slug, ratio] of visibility) {
+          if (ratio > bestRatio) { bestRatio = ratio; bestSlug = slug; }
+        }
+        setActiveSlug(bestRatio > 0 ? bestSlug : null);
+      },
+      { rootMargin: "-96px 0px -55% 0px", threshold: [0, 0.25, 0.5, 0.75, 1] }
+    );
+    elements.forEach((el) => observer.observe(el));
+    return () => observer.disconnect();
+  }, [findings]);
 
   const rerun = async () => {
     setBusy(true);
@@ -193,7 +224,11 @@ const ReviewDetail = () => {
                   <button
                     type="button"
                     onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
-                    className="shrink-0 inline-flex items-center gap-1.5 rounded-full border border-border bg-card-grad px-3 py-1.5 text-xs font-mono uppercase tracking-wider text-muted-foreground hover:border-primary/50 hover:text-foreground transition"
+                    className={`shrink-0 inline-flex items-center gap-1.5 rounded-full border px-3 py-1.5 text-xs font-mono uppercase tracking-wider transition ${
+                      activeSlug === null
+                        ? "border-primary/60 bg-primary/10 text-primary shadow-glow"
+                        : "border-border bg-card-grad text-muted-foreground hover:border-primary/50 hover:text-foreground"
+                    }`}
                   >
                     All <span className="tabular-nums">{findings.length}</span>
                   </button>
@@ -201,6 +236,7 @@ const ReviewDetail = () => {
                     const slug = agentNameToSlug(agent);
                     const persona = personaBySlug(slug);
                     const anchor = `agent-${slug}`;
+                    const isActive = activeSlug === slug;
                     return (
                       <button
                         key={agent}
@@ -212,12 +248,17 @@ const ReviewDetail = () => {
                             window.scrollTo({ top: y, behavior: "smooth" });
                           }
                         }}
-                        className="shrink-0 inline-flex items-center gap-2 rounded-full border border-border bg-card-grad pl-1 pr-3 py-1 text-xs hover:border-primary/50 hover:bg-primary/5 transition group"
+                        aria-current={isActive ? "true" : undefined}
+                        className={`shrink-0 inline-flex items-center gap-2 rounded-full border pl-1 pr-3 py-1 text-xs transition group ${
+                          isActive
+                            ? "border-primary/70 bg-primary/10 text-foreground shadow-glow"
+                            : "border-border bg-card-grad hover:border-primary/50 hover:bg-primary/5"
+                        }`}
                         title={persona ? `${persona.display_name} · ${persona.role_title}` : agent}
                       >
-                        <PersonaAvatar slug={slug} size="xs" />
-                        <span className="font-medium text-foreground/90 group-hover:text-foreground">{agent}</span>
-                        <span className="font-mono tabular-nums text-muted-foreground">{fs.length}</span>
+                        <PersonaAvatar slug={slug} size="xs" ring={isActive} />
+                        <span className={`font-medium ${isActive ? "text-foreground" : "text-foreground/90 group-hover:text-foreground"}`}>{agent}</span>
+                        <span className={`font-mono tabular-nums ${isActive ? "text-primary" : "text-muted-foreground"}`}>{fs.length}</span>
                       </button>
                     );
                   })}
