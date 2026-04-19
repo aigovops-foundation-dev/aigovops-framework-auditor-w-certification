@@ -95,6 +95,20 @@ Deno.serve(async (req) => {
     const conf = confJson as Record<string, unknown>;
     const verdict = String(conf?.verdict ?? "fail");
 
+    // Risk tier — submitter's declared tier (from review) + agent-derived tier.
+    // Insurers price against the disagreement: a self-classified Medium that the
+    // platform derives as High is the strongest underwriting signal in this dataset.
+    const { data: reviewTierRow } = await admin.from("reviews")
+      .select("risk_tier_declared").eq("id", reviewId).maybeSingle();
+    const riskTierDeclared = (reviewTierRow?.risk_tier_declared ?? null) as string | null;
+    const { data: derivedTierRaw } = await admin.rpc("derive_risk_tier", { _review_id: reviewId });
+    const riskTierDerived = (derivedTierRaw ?? "medium") as string;
+
+    // 12-month expiry (NAIC AI Bulletin practice + matches QAGAC re-attestation cycle)
+    const issuedAt = new Date();
+    const expiresAt = new Date(issuedAt);
+    expiresAt.setUTCMonth(expiresAt.getUTCMonth() + 12);
+
     // AOS version
     const { data: aosVer } = await admin.from("aos_versions").select("version").eq("status","active")
       .order("created_at", { ascending: false }).limit(1).maybeSingle();
@@ -141,15 +155,24 @@ Deno.serve(async (req) => {
     doc.setTextColor(0); y += 56;
 
     // Meta block
+    const tierLabel = (t: string | null) => t ? t.toUpperCase() : "—";
+    const tierAgree = riskTierDeclared && riskTierDeclared === riskTierDerived;
+    const tierLine = riskTierDeclared
+      ? `Declared ${tierLabel(riskTierDeclared)} · Derived ${tierLabel(riskTierDerived)}` +
+        (tierAgree ? "  (agree)" : "  ⚠ DISAGREEMENT — underwriting signal")
+      : `Derived ${tierLabel(riskTierDerived)}  (no submitter declaration)`;
+
     const rows: Array<[string,string]> = [
       ["Organization", organization],
       ["Scope", scopeStatement],
       ["AOS Version", aosVersion],
+      ["Risk Tier", tierLine],
       ["Scenarios", (review.scenarios ?? []).join(", ") || "general"],
       ["Findings", `${conf.total_findings ?? 0} total · ${conf.critical ?? 0} critical · ${conf.high ?? 0} high · ${conf.medium ?? 0} medium`],
       ["Compensating controls", String(conf.compensations ?? 0)],
       ["Review ID", reviewId],
-      ["Issued", new Date().toUTCString()],
+      ["Issued", issuedAt.toUTCString()],
+      ["Expires", `${expiresAt.toUTCString()}  (12-month cycle)`],
       ["Trigger", trigger === "auto" ? "Automatic on Quick Audit completion" : "Manual re-issue"],
     ];
     doc.setFontSize(10);
@@ -199,10 +222,13 @@ Deno.serve(async (req) => {
       aos_version: aosVersion,
       determination: verdict,
       conformance: conf,
+      risk_tier_declared: riskTierDeclared,
+      risk_tier_derived: riskTierDerived,
+      expires_at: expiresAt.toISOString(),
       chain_manifest: chainManifest.map((r: any) => ({
         event: r.event, prev_hash: r.prev_hash, entry_hash: r.entry_hash, signature: r.signature, created_at: r.created_at,
       })),
-      issued_at: new Date().toISOString(),
+      issued_at: issuedAt.toISOString(),
     });
     const contentHash = await sha256Hex(enc.encode(canonicalCertBody));
 
@@ -294,6 +320,9 @@ Deno.serve(async (req) => {
         signature_kind: "hmac-sha256-demo",
         trigger,
         manifest_entries: chainManifest.length,
+        risk_tier_declared: riskTierDeclared,
+        risk_tier_derived: riskTierDerived,
+        expires_at: expiresAt.toISOString(),
       },
     });
 
@@ -315,6 +344,9 @@ Deno.serve(async (req) => {
       chain_manifest: chainManifest,
       issued_by: actorId,
       trigger_kind: trigger === "auto" ? "auto" : "manual",
+      risk_tier_declared: riskTierDeclared as any,
+      risk_tier_derived: riskTierDerived as any,
+      expires_at: expiresAt.toISOString(),
     }).select().single();
     if (certErr) throw certErr;
 

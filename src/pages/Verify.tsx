@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { useParams, Link } from "react-router-dom";
-import { ShieldCheck, ShieldX, Loader2, ExternalLink, Download, Sparkles, CheckCircle2, XCircle, Anchor } from "lucide-react";
+import { ShieldCheck, ShieldX, Loader2, ExternalLink, Download, Sparkles, CheckCircle2, XCircle, Anchor, Clock, AlertTriangle } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { PublicShell } from "@/components/PublicShell";
 import { PageHeader } from "@/components/ui/page-header";
@@ -28,7 +28,26 @@ interface CertOut {
   pdf_sha256_live: string | null;
   pdf_hash_ok: boolean;
   anchor_ok: boolean;
+  risk_tier_declared: string | null;
+  risk_tier_derived: string | null;
+  risk_tier_disagreement: boolean;
+  expires_at: string | null;
+  revoked_at: string | null;
+  revoked_reason: string | null;
+  status: "active" | "expired" | "revoked";
+  days_until_expiry: number | null;
 }
+
+const tierTone = (t: string | null) =>
+  t === "critical" ? "bg-destructive/15 text-destructive border-destructive/30"
+  : t === "high" ? "bg-amber-500/15 text-amber-700 dark:text-amber-300 border-amber-500/30"
+  : t === "medium" ? "bg-sky-500/15 text-sky-700 dark:text-sky-300 border-sky-500/30"
+  : "";
+
+const statusTone = (s: string) =>
+  s === "active" ? "bg-emerald-500/15 text-emerald-700 dark:text-emerald-300 border-emerald-500/30"
+  : s === "expired" ? "bg-amber-500/15 text-amber-700 dark:text-amber-300 border-amber-500/30"
+  : "bg-destructive/15 text-destructive border-destructive/30";
 
 const determinationTone = (d: string) =>
   d === "pass" ? "bg-emerald-500/15 text-emerald-700 dark:text-emerald-300 border-emerald-500/30"
@@ -114,6 +133,9 @@ const Verify = () => {
                         <Badge variant="outline" className={determinationTone(c.determination)}>
                           {c.determination.replace(/_/g, " ")}
                         </Badge>
+                        <Badge variant="outline" className={`font-mono text-[10px] ${statusTone(c.status)}`}>
+                          {c.status}
+                        </Badge>
                         <Badge variant="outline" className="font-mono text-[10px]">{c.trigger_kind}</Badge>
                         <Badge variant="outline" className="font-mono text-[10px]">{c.signature_kind}</Badge>
                         <span className="text-xs text-muted-foreground">{new Date(c.issued_at).toLocaleString()}</span>
@@ -124,6 +146,39 @@ const Verify = () => {
                             <Download className="h-4 w-4 mr-1.5" />PDF
                           </a>
                         </Button>
+                      )}
+                    </div>
+
+                    {/* Risk tier — declared vs derived (insurance-readiness panel) */}
+                    <div className="rounded-md border border-border/60 bg-muted/30 p-3 space-y-2">
+                      <div className="text-[11px] uppercase tracking-wider text-muted-foreground">Risk tier · EU AI Act-style</div>
+                      <div className="grid sm:grid-cols-2 gap-2 text-xs">
+                        <div className="flex items-center gap-2">
+                          <span className="text-muted-foreground">Submitter declared:</span>
+                          {c.risk_tier_declared
+                            ? <Badge variant="outline" className={tierTone(c.risk_tier_declared)}>{c.risk_tier_declared}</Badge>
+                            : <span className="italic text-muted-foreground">not declared</span>}
+                        </div>
+                        <div className="flex items-center gap-2">
+                          <span className="text-muted-foreground">Agent derived:</span>
+                          {c.risk_tier_derived
+                            ? <Badge variant="outline" className={tierTone(c.risk_tier_derived)}>{c.risk_tier_derived}</Badge>
+                            : <span className="italic text-muted-foreground">—</span>}
+                        </div>
+                      </div>
+                      {c.risk_tier_disagreement && (
+                        <div className="flex items-center gap-1.5 text-[11px] text-amber-600 dark:text-amber-400">
+                          <AlertTriangle className="h-3 w-3" />
+                          Tier disagreement — underwriting signal (insurer should price against derived).
+                        </div>
+                      )}
+                      {c.expires_at && (
+                        <div className="flex items-center gap-1.5 text-[11px] font-mono text-muted-foreground">
+                          <Clock className="h-3 w-3" />
+                          Expires {new Date(c.expires_at).toLocaleString()}
+                          {c.days_until_expiry !== null && c.status === "active" && ` · ${c.days_until_expiry}d remaining`}
+                          {c.status === "expired" && " · expired — re-attestation required"}
+                        </div>
                       )}
                     </div>
 
