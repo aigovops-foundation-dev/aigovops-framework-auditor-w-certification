@@ -28,6 +28,11 @@
       "bytes": 2252
     },
     {
+      "path": "docs/index.html",
+      "sha256": "4653ebb402ea9e421d3e354c47d3f8e27faabb1976af9074deeb7fc81ff00e12",
+      "bytes": 16127
+    },
+    {
       "path": "GOVERNANCE.md",
       "sha256": "1b3c74a5b1de75eae2b46686d53bea3192910851da34a161823e45e300c39207",
       "bytes": 2769
