@@ -140,9 +140,21 @@ const ReviewDetail = () => {
   if (!review) return <AppShell><div className="p-8 font-mono text-sm text-muted-foreground">loading…</div></AppShell>;
 
   const running = ["ingesting", "analyzing"].includes(review.status);
-  const byAgent = findings.reduce<Record<string, any[]>>((acc, f) => {
+  const SEVERITIES = ["critical", "high", "medium", "low", "info"] as const;
+  const sevCounts = findings.reduce<Record<string, number>>((acc, f) => {
+    acc[f.severity] = (acc[f.severity] ?? 0) + 1; return acc;
+  }, {});
+  const visibleFindings = findings.filter((f) => !hiddenSeverities.has(f.severity));
+  const byAgent = visibleFindings.reduce<Record<string, any[]>>((acc, f) => {
     (acc[f.agent_name] ??= []).push(f); return acc;
   }, {});
+  const toggleSeverity = (sev: string) => {
+    setHiddenSeverities((cur) => {
+      const next = new Set(cur);
+      if (next.has(sev)) next.delete(sev); else next.add(sev);
+      return next;
+    });
+  };
 
   return (
     <AppShell>
