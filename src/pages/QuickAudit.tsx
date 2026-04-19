@@ -6,12 +6,13 @@ import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { Badge } from "@/components/ui/badge";
 import { Card } from "@/components/ui/card";
-import { Loader2, Sparkles, Zap, Crown, ArrowRight, AlertTriangle, ShieldCheck, Play } from "lucide-react";
+import { Loader2, Sparkles, Zap, Crown, ArrowRight, AlertTriangle, ShieldCheck, Play, Gauge } from "lucide-react";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
 import { useRoles } from "@/hooks/useRoles";
 import { usePageMeta } from "@/hooks/usePageMeta";
+import { NamedCameo, PersonaAvatar } from "@/components/agents/PersonaPrimitives";
 
 const SAMPLE = `package aigovops.openclaw
 
