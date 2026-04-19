@@ -137,14 +137,14 @@ const Verify = () => {
                     {/* Integrity checks */}
                     <div className="rounded-md border border-border/60 bg-muted/30 p-3 space-y-2">
                       <div className="flex items-center gap-2 text-xs">
-                        {c.pdf_hash_ok ? <CheckCircle2 className="h-4 w-4 text-emerald-600" /> : <XCircle className="h-4 w-4 text-destructive" />}
+                        {c.pdf_hash_ok ? <CheckCircle2 className="h-4 w-4 text-primary" /> : <XCircle className="h-4 w-4 text-destructive" />}
                         <span className="font-medium">PDF SHA-256 integrity</span>
                         <span className="text-muted-foreground">
                           {c.pdf_hash_ok ? "stored hash matches live PDF bytes" : c.pdf_sha256_live ? "MISMATCH — file may have been replaced" : "could not fetch live PDF"}
                         </span>
                       </div>
                       <div className="flex items-center gap-2 text-xs">
-                        {c.anchor_ok ? <CheckCircle2 className="h-4 w-4 text-emerald-600" /> : <XCircle className="h-4 w-4 text-destructive" />}
+                        {c.anchor_ok ? <CheckCircle2 className="h-4 w-4 text-primary" /> : <XCircle className="h-4 w-4 text-destructive" />}
                         <span className="font-medium flex items-center gap-1"><Anchor className="h-3 w-3" /> Audit anchor</span>
                         <span className="text-muted-foreground">
                           {c.anchor_ok ? "entry_hash present in live chain" : "anchor row missing from chain"}
