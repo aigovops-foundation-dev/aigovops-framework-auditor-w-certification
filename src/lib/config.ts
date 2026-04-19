@@ -8,6 +8,12 @@ export const FOUNDATION = {
   shortName: "AiGovOps",
   url: "https://www.aigovopsfoundation.org/",
   donateUrl: "https://www.aigovopsfoundation.org/donate",
+  /** Stripe-hosted checkout links for direct donations to the Foundation. */
+  stripeDonate: {
+    pickYourAmount: "https://buy.stripe.com/cNi9AU8RT0884tR6Ix4Vy02",
+    fifty: "https://buy.stripe.com/28E00kfgh1ccbWjgj74Vy01",
+    twentyFive: "https://buy.stripe.com/eVq7sMb015ss9Obd6V4Vy00",
+  },
   githubSponsorsUrl: "https://github.com/sponsors/aigovopsfoundation",
   githubOrgUrl: "https://github.com/aigovopsfoundation",
   contactEmail: "hello@aigovopsfoundation.org",

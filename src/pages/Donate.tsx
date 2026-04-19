@@ -1,5 +1,5 @@
 import { Link } from "react-router-dom";
-import { Heart, Github, ExternalLink, ShieldCheck, Sparkles, BookOpen, Mail } from "lucide-react";
+import { Heart, ExternalLink, ShieldCheck, Sparkles, BookOpen, Mail } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { PublicShell } from "@/components/PublicShell";
 import { PageHeader } from "@/components/ui/page-header";
@@ -17,7 +17,7 @@ const Donate = () => {
       "@type": "NGO",
       name: FOUNDATION.name,
       url: FOUNDATION.url,
-      sameAs: [FOUNDATION.githubOrgUrl, FOUNDATION.githubSponsorsUrl],
+      sameAs: [FOUNDATION.githubOrgUrl],
       email: FOUNDATION.donationsEmail,
     },
   });
@@ -37,50 +37,43 @@ const Donate = () => {
           }
         />
 
-        <section className="grid md:grid-cols-2 gap-4 mt-8">
-          <a
-            href={FOUNDATION.donateUrl}
-            target="_blank"
-            rel="noreferrer"
-            className="group rounded-xl border border-primary/30 bg-card-grad p-6 shadow-elev hover:border-primary/60 hover:shadow-glow transition-all"
-          >
-            <div className="flex items-start justify-between">
-              <Heart className="h-7 w-7 text-primary" />
-              <span className="text-[10px] font-mono uppercase tracking-wider text-primary">Recommended</span>
-            </div>
-            <div className="mt-4 text-lg font-semibold">Donate to the Foundation</div>
-            <p className="text-sm text-muted-foreground mt-1">
-              One-time or recurring. Tax receipt issued in jurisdictions where applicable. Card, ACH, and wire
-              accepted.
-            </p>
-            <div className="mt-4 inline-flex items-center gap-1 text-sm font-mono text-primary">
-              aigovopsfoundation.org/donate
-              <ExternalLink className="h-3.5 w-3.5 transition-transform group-hover:translate-x-0.5" />
-            </div>
-          </a>
+        <section className="grid md:grid-cols-3 gap-4 mt-8">
+          {tiers.map((t) => (
+            <a
+              key={t.label}
+              href={t.url}
+              target="_blank"
+              rel="noreferrer"
+              className={`group rounded-xl border ${
+                t.featured
+                  ? "border-primary/40 bg-card-grad shadow-elev hover:border-primary/70 hover:shadow-glow"
+                  : "border-border bg-card-grad shadow-elev hover:border-primary/40"
+              } p-6 transition-all`}
+            >
+              <div className="flex items-start justify-between">
+                <Heart className={`h-7 w-7 ${t.featured ? "text-primary" : "text-foreground/80"}`} />
+                {t.badge && (
+                  <span
+                    className={`text-[10px] font-mono uppercase tracking-wider ${
+                      t.featured ? "text-primary" : "text-muted-foreground"
+                    }`}
+                  >
+                    {t.badge}
+                  </span>
+                )}
+              </div>
+              <div className="mt-4 text-2xl font-semibold tracking-tight">{t.label}</div>
+              <p className="text-sm text-muted-foreground mt-1">{t.body}</p>
+              <div className="mt-4 inline-flex items-center gap-1 text-sm font-mono text-primary">
+                {t.cta}
+                <ExternalLink className="h-3.5 w-3.5 transition-transform group-hover:translate-x-0.5" />
+              </div>
+            </a>
+          ))}
+        </section>
 
-          <a
-            href={FOUNDATION.githubSponsorsUrl}
-            target="_blank"
-            rel="noreferrer"
-            className="group rounded-xl border border-border bg-card-grad p-6 shadow-elev hover:border-foreground/30 transition-all"
-          >
-            <div className="flex items-start justify-between">
-              <Github className="h-7 w-7 text-foreground" />
-              <span className="text-[10px] font-mono uppercase tracking-wider text-muted-foreground">
-                Devs &amp; orgs
-              </span>
-            </div>
-            <div className="mt-4 text-lg font-semibold">Sponsor on GitHub</div>
-            <p className="text-sm text-muted-foreground mt-1">
-              Recurring monthly tiers. Contribution shows on your GitHub profile and the Foundation's org
-              page.
-            </p>
-            <div className="mt-4 inline-flex items-center gap-1 text-sm font-mono text-foreground/80 group-hover:text-foreground">
-              github.com/sponsors/aigovopsfoundation
-              <ExternalLink className="h-3.5 w-3.5 transition-transform group-hover:translate-x-0.5" />
-            </div>
-          </a>
+        <section className="mt-6 text-xs text-muted-foreground font-mono text-center">
+          Secure checkout via Stripe · cards, Apple Pay, Google Pay accepted · receipt emailed instantly
         </section>
 
         <section className="mt-12">
@@ -128,6 +121,33 @@ const Donate = () => {
     </PublicShell>
   );
 };
+
+const tiers = [
+  {
+    label: "$25",
+    badge: "Supporter",
+    body: "Funds one hour of editor time on the AOS spec or one canary-drift triage.",
+    cta: "Donate $25",
+    url: FOUNDATION.stripeDonate.twentyFive,
+    featured: false,
+  },
+  {
+    label: "$50",
+    badge: "Sustainer",
+    body: "Sponsors a QAGA scholarship exam seat for a public-interest assessor.",
+    cta: "Donate $50",
+    url: FOUNDATION.stripeDonate.fifty,
+    featured: true,
+  },
+  {
+    label: "Pick your amount",
+    badge: "Custom",
+    body: "Choose any amount — one-time or recurring. Card, Apple Pay, Google Pay.",
+    cta: "Choose amount",
+    url: FOUNDATION.stripeDonate.pickYourAmount,
+    featured: false,
+  },
+];
 
 const fundedWork = [
   {
