@@ -1,0 +1,395 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>AiGovOps Review Framework — Agents Review. Humans Decide. Math Proves.</title>
+  <meta name="description" content="Open-source reference implementation of the AOS (AI Operating Standard). Multi-agent governance review with human-in-the-loop, tamper-evident audit chains, and verifiable attestations." />
+  <link rel="canonical" href="https://aigovops.github.io/aigovops-framework/" />
+
+  <!-- Open Graph -->
+  <meta property="og:title" content="AiGovOps Review Framework" />
+  <meta property="og:description" content="Agents review. Humans decide. Math proves. Apache-2.0 reference implementation of the AI Operating Standard." />
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="https://aigovops.github.io/aigovops-framework/" />
+
+  <!-- JSON-LD -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "SoftwareApplication",
+    "name": "AiGovOps Review Framework",
+    "applicationCategory": "DeveloperApplication",
+    "operatingSystem": "Web",
+    "description": "Open-source reference implementation of the AI Operating Standard (AOS). Multi-agent AI governance review with human-in-the-loop and tamper-evident audit.",
+    "license": "https://www.apache.org/licenses/LICENSE-2.0",
+    "url": "https://aigovops-framework-auditor-w-certification.lovable.app",
+    "publisher": {
+      "@type": "Organization",
+      "name": "AiGovOps Foundation",
+      "url": "https://github.com/aigovops"
+    },
+    "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" }
+  }
+  </script>
+
+  <style>
+    :root {
+      --bg: #0b0f1a;
+      --surface: #121829;
+      --surface-2: #1a2238;
+      --border: #243049;
+      --text: #e6ebf5;
+      --muted: #93a0bd;
+      --primary: #5b8def;
+      --primary-glow: #7aa6ff;
+      --accent: #4ade80;
+      --warning: #fbbf24;
+      --maxw: 1080px;
+    }
+    * { box-sizing: border-box; }
+    html, body { margin: 0; padding: 0; }
+    body {
+      background: radial-gradient(ellipse at top, #182347 0%, var(--bg) 60%);
+      color: var(--text);
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Inter, system-ui, sans-serif;
+      line-height: 1.6;
+      -webkit-font-smoothing: antialiased;
+    }
+    a { color: var(--primary-glow); text-decoration: none; }
+    a:hover { text-decoration: underline; }
+    .wrap { max-width: var(--maxw); margin: 0 auto; padding: 0 24px; }
+    header.site {
+      padding: 24px 0;
+      border-bottom: 1px solid var(--border);
+    }
+    header.site .row {
+      display: flex; justify-content: space-between; align-items: center; gap: 16px;
+    }
+    .brand {
+      font-weight: 700; font-size: 18px; letter-spacing: -0.01em;
+    }
+    .brand .dot { color: var(--primary); }
+    nav.top a { margin-left: 20px; color: var(--muted); font-size: 14px; }
+    nav.top a:hover { color: var(--text); text-decoration: none; }
+
+    .hero {
+      padding: 80px 0 60px;
+      text-align: center;
+    }
+    .hero .eyebrow {
+      display: inline-block;
+      padding: 6px 14px;
+      border: 1px solid var(--border);
+      border-radius: 999px;
+      font-size: 12px;
+      color: var(--muted);
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+      margin-bottom: 20px;
+    }
+    .hero h1 {
+      font-size: clamp(36px, 6vw, 64px);
+      line-height: 1.05;
+      margin: 0 0 20px;
+      letter-spacing: -0.02em;
+      background: linear-gradient(180deg, #ffffff 0%, #b9c4dd 100%);
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+    }
+    .hero p.lede {
+      font-size: 19px;
+      color: var(--muted);
+      max-width: 720px;
+      margin: 0 auto 32px;
+    }
+    .cta-row { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; }
+    .btn {
+      display: inline-flex; align-items: center; gap: 8px;
+      padding: 12px 22px; border-radius: 10px;
+      font-weight: 600; font-size: 15px;
+      border: 1px solid transparent;
+      transition: transform .15s ease, box-shadow .15s ease;
+    }
+    .btn:hover { transform: translateY(-1px); text-decoration: none; }
+    .btn-primary {
+      background: linear-gradient(135deg, var(--primary), var(--primary-glow));
+      color: white;
+      box-shadow: 0 8px 24px -8px rgba(91, 141, 239, 0.6);
+    }
+    .btn-primary:hover { box-shadow: 0 12px 32px -8px rgba(91, 141, 239, 0.8); }
+    .btn-ghost {
+      background: var(--surface);
+      color: var(--text);
+      border-color: var(--border);
+    }
+    .btn-ghost:hover { background: var(--surface-2); }
+
+    .badges { margin-top: 28px; display: flex; gap: 8px; justify-content: center; flex-wrap: wrap; }
+    .badges img { height: 22px; }
+
+    section { padding: 60px 0; border-top: 1px solid var(--border); }
+    section h2 {
+      font-size: 28px;
+      letter-spacing: -0.01em;
+      margin: 0 0 8px;
+    }
+    section .sub {
+      color: var(--muted);
+      margin: 0 0 32px;
+    }
+
+    .grid-3 {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 16px;
+    }
+    .card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 24px;
+    }
+    .card h3 {
+      margin: 0 0 8px;
+      font-size: 17px;
+      display: flex; align-items: center; gap: 8px;
+    }
+    .card h3 .pill {
+      font-size: 10px; font-weight: 700;
+      padding: 2px 8px; border-radius: 999px;
+      background: rgba(91, 141, 239, 0.15);
+      color: var(--primary-glow);
+      letter-spacing: 0.05em;
+    }
+    .card p { color: var(--muted); margin: 0; font-size: 14px; }
+
+    .quickstart pre {
+      background: #06091a;
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 20px;
+      overflow-x: auto;
+      font-size: 13px;
+      color: #c5d4ff;
+      line-height: 1.7;
+    }
+    .quickstart code { font-family: "SF Mono", Menlo, Consolas, monospace; }
+    .quickstart .comment { color: #6479a8; }
+
+    .pillars { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 12px; margin-top: 24px; }
+    .pillar {
+      padding: 18px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      text-align: center;
+    }
+    .pillar .num { font-size: 28px; font-weight: 700; color: var(--primary-glow); }
+    .pillar .lbl { font-size: 13px; color: var(--muted); margin-top: 4px; }
+
+    footer.site {
+      padding: 40px 0 60px;
+      border-top: 1px solid var(--border);
+      color: var(--muted);
+      font-size: 13px;
+    }
+    footer.site .row {
+      display: flex; justify-content: space-between; gap: 16px; flex-wrap: wrap;
+    }
+    footer.site a { color: var(--muted); margin-right: 16px; }
+    footer.site a:hover { color: var(--text); }
+    .donate {
+      margin-top: 16px;
+      padding: 16px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      display: flex;
+      gap: 10px;
+      align-items: center;
+      flex-wrap: wrap;
+    }
+    .donate strong { color: var(--text); }
+    .donate a {
+      padding: 6px 14px;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      color: var(--text);
+      font-weight: 600;
+      font-size: 13px;
+    }
+    .donate a:hover { background: var(--surface-2); text-decoration: none; }
+
+    @media (max-width: 600px) {
+      nav.top { display: none; }
+      .hero { padding: 50px 0 40px; }
+    }
+  </style>
+</head>
+<body>
+  <header class="site">
+    <div class="wrap row">
+      <div class="brand"><span class="dot">●</span> AiGovOps</div>
+      <nav class="top">
+        <a href="#whats-in-the-box">What's in the box</a>
+        <a href="#quickstart">Quick start</a>
+        <a href="https://github.com/aigovops/aigovops-framework">GitHub</a>
+        <a href="https://aigovops-framework-auditor-w-certification.lovable.app">Live demo</a>
+      </nav>
+    </div>
+  </header>
+
+  <main>
+    <section class="hero" style="border-top: none;">
+      <div class="wrap">
+        <div class="eyebrow">v0.1.0 · Apache-2.0 · OSS launch</div>
+        <h1>Agents review.<br/>Humans decide.<br/>Math proves.</h1>
+        <p class="lede">
+          The AiGovOps Review Framework is the open-source reference implementation
+          of the <strong>AI Operating Standard (AOS)</strong> — a vendor-neutral
+          governance protocol stewarded by the AiGovOps Foundation. Multi-agent
+          review pipeline, human-in-the-loop, and a SHA-256 tamper-evident audit
+          chain you can verify yourself with one CLI command.
+        </p>
+        <div class="cta-row">
+          <a class="btn btn-primary" href="https://aigovops-framework-auditor-w-certification.lovable.app">
+            Try the live demo →
+          </a>
+          <a class="btn btn-ghost" href="https://github.com/aigovops/aigovops-framework">
+            View on GitHub
+          </a>
+        </div>
+        <div class="badges">
+          <img alt="License" src="https://img.shields.io/badge/license-Apache--2.0-blue.svg" />
+          <img alt="AOS" src="https://img.shields.io/badge/AOS-v0.1-5b8def" />
+          <img alt="Status" src="https://img.shields.io/badge/status-public%20launch-4ade80" />
+          <img alt="Verify" src="https://img.shields.io/badge/%40aigovops%2Fverify-CLI-7aa6ff" />
+        </div>
+
+        <div class="pillars">
+          <div class="pillar"><div class="num">9</div><div class="lbl">governance docs pinned</div></div>
+          <div class="pillar"><div class="num">12+</div><div class="lbl">edge functions, hash-chained</div></div>
+          <div class="pillar"><div class="num">100%</div><div class="lbl">RLS coverage</div></div>
+          <div class="pillar"><div class="num">72h</div><div class="lbl">security disclosure SLA</div></div>
+        </div>
+      </div>
+    </section>
+
+    <section id="whats-in-the-box">
+      <div class="wrap">
+        <h2>What's in the box</h2>
+        <p class="sub">Five components, one repo, Apache-2.0 throughout.</p>
+        <div class="grid-3">
+          <div class="card">
+            <h3>Web app <span class="pill">REACT</span></h3>
+            <p>React + Vite frontend. Submit a review, watch agents work, and see HITL queues, attestations, and conformance scoring in real time.</p>
+          </div>
+          <div class="card">
+            <h3>Edge functions <span class="pill">DENO</span></h3>
+            <p>The agent pipeline, signed audit chain, attestation issuance, and verification endpoint. All hash-pinned in the canary manifest.</p>
+          </div>
+          <div class="card">
+            <h3>AOS spec <span class="pill">YAML</span></h3>
+            <p>Machine-readable AI Operating Standard v0.1 — controls, frameworks, evidence expectations. Vendor-neutral and forkable.</p>
+          </div>
+          <div class="card">
+            <h3>@aigovops/verify <span class="pill">CLI</span></h3>
+            <p>npm package that re-verifies any attestation PDF or audit chain offline. Lets anyone math-check our claims without trusting our server.</p>
+          </div>
+          <div class="card">
+            <h3>Canary manifest <span class="pill">CI</span></h3>
+            <p>SHA-256 manifest of every governance-critical file. A weekly GitHub Action opens an issue if anything drifts. Public mirror at <code>/canary-manifest.json</code>.</p>
+          </div>
+          <div class="card">
+            <h3>QAGA program <span class="pill">DOCS</span></h3>
+            <p>Qualified AI Governance Assessor charter, firm independence rules, and the public registry. Foundation-stewarded, not vendor-locked.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="quickstart" class="quickstart">
+      <div class="wrap">
+        <h2>60-second quick start</h2>
+        <p class="sub">Clone, install, run. Zero config.</p>
+<pre><code><span class="comment"># 1. Clone</span>
+git clone https://github.com/aigovops/aigovops-framework.git
+cd aigovops-framework
+
+<span class="comment"># 2. Install</span>
+npm install
+
+<span class="comment"># 3. Run</span>
+npm run dev
+
+<span class="comment"># 4. Verify any attestation, anywhere, offline</span>
+npx @aigovops/verify pdf ./attestation.pdf</code></pre>
+      </div>
+    </section>
+
+    <section>
+      <div class="wrap">
+        <h2>Trust by design</h2>
+        <p class="sub">Five surfaces every visitor can audit before trusting a single result.</p>
+        <div class="grid-3">
+          <div class="card">
+            <h3>Public AOS spec</h3>
+            <p><a href="https://aigovops-framework-auditor-w-certification.lovable.app/aos-spec">/aos-spec</a> — read the controls we evaluate against.</p>
+          </div>
+          <div class="card">
+            <h3>Public audit log</h3>
+            <p><a href="https://aigovops-framework-auditor-w-certification.lovable.app/audit-log">/audit-log</a> — hash-chained, signature-verified.</p>
+          </div>
+          <div class="card">
+            <h3>Verify any attestation</h3>
+            <p><a href="https://aigovops-framework-auditor-w-certification.lovable.app/verify">/verify</a> — paste an ID, get a signed verdict.</p>
+          </div>
+          <div class="card">
+            <h3>Security model</h3>
+            <p><a href="https://aigovops-framework-auditor-w-certification.lovable.app/security">/security</a> — RLS, secrets, disclosure SLA.</p>
+          </div>
+          <div class="card">
+            <h3>Canary status</h3>
+            <p><a href="https://aigovops-framework-auditor-w-certification.lovable.app/canary">/canary</a> — live tamper-evidence dashboard.</p>
+          </div>
+          <div class="card">
+            <h3>Foundation governance</h3>
+            <p><a href="https://github.com/aigovops/aigovops-framework/blob/main/GOVERNANCE.md">GOVERNANCE.md</a> — practitioner-owned, vendor-neutral.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section>
+      <div class="wrap">
+        <h2>Support the foundation</h2>
+        <p class="sub">100% of donations fund foundation operations: AOS spec stewardship, the verify CLI, the QAGA program, and keeping this all vendor-neutral.</p>
+        <div class="donate">
+          <strong>Donate via Stripe:</strong>
+          <a href="https://buy.stripe.com/eVq7sMb015ss9Obd6V4Vy00">$25</a>
+          <a href="https://buy.stripe.com/28E00kfgh1ccbWjgj74Vy01">$50</a>
+          <a href="https://buy.stripe.com/cNi9AU8RT0884tR6Ix4Vy02">Pick your amount</a>
+          <a href="https://aigovops-framework-auditor-w-certification.lovable.app/donate" style="margin-left:auto;">More options →</a>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site">
+    <div class="wrap row">
+      <div>
+        <div>© 2026 AiGovOps Foundation · Apache-2.0</div>
+        <div style="margin-top:6px; font-size:12px;">A vendor-neutral, practitioner-owned standard for AI governance.</div>
+      </div>
+      <div>
+        <a href="https://github.com/aigovops/aigovops-framework">GitHub</a>
+        <a href="https://github.com/aigovops/aigovops-framework/blob/main/SECURITY.md">Security</a>
+        <a href="https://github.com/aigovops/aigovops-framework/blob/main/GOVERNANCE.md">Governance</a>
+        <a href="https://github.com/aigovops/aigovops-framework/blob/main/CHANGELOG.md">Changelog</a>
+      </div>
+    </div>
+  </footer>
+</body>
+</html>
