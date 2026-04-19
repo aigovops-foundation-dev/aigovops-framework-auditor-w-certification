@@ -14,7 +14,6 @@ export const FOUNDATION = {
     fifty: "https://buy.stripe.com/28E00kfgh1ccbWjgj74Vy01",
     twentyFive: "https://buy.stripe.com/eVq7sMb015ss9Obd6V4Vy00",
   },
-  githubSponsorsUrl: "https://github.com/sponsors/aigovopsfoundation",
   githubOrgUrl: "https://github.com/aigovopsfoundation",
   contactEmail: "hello@aigovopsfoundation.org",
   securityEmail: "security@aigovopsfoundation.org",
