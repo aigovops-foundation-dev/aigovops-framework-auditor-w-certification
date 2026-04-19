@@ -104,6 +104,7 @@ const QuickAudit = () => {
     setBusy(true);
     setFindings([]);
     setOverall(null);
+    setDerivedTier(null);
     try {
       // 1. Create review (locked to enterprise_oss)
       const { data: review, error: rErr } = await supabase
