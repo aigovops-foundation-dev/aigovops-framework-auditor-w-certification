@@ -15,9 +15,52 @@ import {
   Minus,
   Loader2,
   RefreshCw,
+  Copy,
   type LucideIcon,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { useToast } from "@/hooks/use-toast";
+
+interface CopyHashButtonProps {
+  hash: string;
+  path: string;
+}
+
+const CopyHashButton = ({ hash, path }: CopyHashButtonProps) => {
+  const [copied, setCopied] = useState(false);
+  const { toast } = useToast();
+
+  const handleCopy = async (e: React.MouseEvent) => {
+    e.stopPropagation();
+    try {
+      await navigator.clipboard.writeText(hash);
+      setCopied(true);
+      toast({
+        title: "SHA-256 copied",
+        description: path,
+      });
+      setTimeout(() => setCopied(false), 1500);
+    } catch {
+      toast({
+        title: "Copy failed",
+        description: "Clipboard access blocked by the browser.",
+        variant: "destructive",
+      });
+    }
+  };
+
+  return (
+    <button
+      type="button"
+      onClick={handleCopy}
+      title={copied ? "Copied!" : `Copy full SHA-256\n${hash}`}
+      aria-label={`Copy full SHA-256 for ${path}`}
+      className="inline-flex h-5 w-5 items-center justify-center rounded border border-border bg-card text-muted-foreground hover:border-primary/40 hover:text-primary transition-colors shrink-0"
+    >
+      {copied ? <Check className="h-3 w-3" /> : <Copy className="h-3 w-3" />}
+    </button>
+  );
+};
 
 interface CanaryEntry {
   path: string;
@@ -475,11 +518,16 @@ const Canary = () => {
                                 <td className="px-4 py-2 font-mono text-xs">
                                   {f.path}
                                 </td>
-                                <td
-                                  className="px-4 py-2 font-mono text-xs text-primary"
-                                  title={f.sha256}
-                                >
-                                  {f.sha256.slice(0, 16)}…
+                                <td className="px-4 py-2 font-mono text-xs text-primary">
+                                  <span className="inline-flex items-center gap-2">
+                                    <span title={f.sha256}>
+                                      {f.sha256.slice(0, 16)}…
+                                    </span>
+                                    <CopyHashButton
+                                      hash={f.sha256}
+                                      path={f.path}
+                                    />
+                                  </span>
                                 </td>
                                 <td className="px-4 py-2 text-right font-mono text-xs text-muted-foreground">
                                   {formatBytes(f.bytes)}
