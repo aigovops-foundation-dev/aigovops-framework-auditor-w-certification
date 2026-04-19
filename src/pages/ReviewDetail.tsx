@@ -46,6 +46,7 @@ const ReviewDetail = () => {
   const [chain, setChain] = useState<{ ok: boolean; count: number; results?: Array<{ ok: boolean; reason?: string }> } | null>(null);
   const [verifying, setVerifying] = useState(false);
   const [activeSlug, setActiveSlug] = useState<string | null>(null);
+  const [hiddenSeverities, setHiddenSeverities] = useState<Set<string>>(new Set());
 
   const load = useCallback(async () => {
     if (!id) return;
@@ -139,9 +140,21 @@ const ReviewDetail = () => {
   if (!review) return <AppShell><div className="p-8 font-mono text-sm text-muted-foreground">loading…</div></AppShell>;
 
   const running = ["ingesting", "analyzing"].includes(review.status);
-  const byAgent = findings.reduce<Record<string, any[]>>((acc, f) => {
+  const SEVERITIES = ["critical", "high", "medium", "low", "info"] as const;
+  const sevCounts = findings.reduce<Record<string, number>>((acc, f) => {
+    acc[f.severity] = (acc[f.severity] ?? 0) + 1; return acc;
+  }, {});
+  const visibleFindings = findings.filter((f) => !hiddenSeverities.has(f.severity));
+  const byAgent = visibleFindings.reduce<Record<string, any[]>>((acc, f) => {
     (acc[f.agent_name] ??= []).push(f); return acc;
   }, {});
+  const toggleSeverity = (sev: string) => {
+    setHiddenSeverities((cur) => {
+      const next = new Set(cur);
+      if (next.has(sev)) next.delete(sev); else next.add(sev);
+      return next;
+    });
+  };
 
   return (
     <AppShell>
@@ -217,9 +230,9 @@ const ReviewDetail = () => {
               </div>
             )}
 
-            {/* Agent tab strip — jump to a specific agent's findings */}
+            {/* Agent + severity tab strip */}
             {findings.length > 0 && (
-              <div className="sticky top-0 z-10 -mx-2 px-2 py-2 bg-background/80 backdrop-blur-sm border-b border-border/60">
+              <div className="sticky top-0 z-10 -mx-2 px-2 py-2 bg-background/80 backdrop-blur-sm border-b border-border/60 space-y-2">
                 <div className="flex items-center gap-2 overflow-x-auto pb-1 scrollbar-thin">
                   <button
                     type="button"
@@ -230,7 +243,7 @@ const ReviewDetail = () => {
                         : "border-border bg-card-grad text-muted-foreground hover:border-primary/50 hover:text-foreground"
                     }`}
                   >
-                    All <span className="tabular-nums">{findings.length}</span>
+                    All <span className="tabular-nums">{visibleFindings.length}</span>
                   </button>
                   {Object.entries(byAgent).map(([agent, fs]) => {
                     const slug = agentNameToSlug(agent);
@@ -263,6 +276,50 @@ const ReviewDetail = () => {
                     );
                   })}
                 </div>
+
+                {/* Severity filter */}
+                <div className="flex items-center gap-2 overflow-x-auto pb-1 scrollbar-thin">
+                  <span className="shrink-0 text-[10px] font-mono uppercase tracking-wider text-muted-foreground">severity</span>
+                  {SEVERITIES.map((sev) => {
+                    const count = sevCounts[sev] ?? 0;
+                    if (count === 0) return null;
+                    const hidden = hiddenSeverities.has(sev);
+                    return (
+                      <button
+                        key={sev}
+                        type="button"
+                        onClick={() => toggleSeverity(sev)}
+                        aria-pressed={!hidden}
+                        title={hidden ? `Show ${sev} findings` : `Hide ${sev} findings`}
+                        className={`shrink-0 inline-flex items-center gap-1.5 rounded-full border px-2.5 py-1 text-[11px] font-mono uppercase tracking-wider transition ${
+                          hidden
+                            ? "border-border bg-background/50 text-muted-foreground/60 line-through opacity-60 hover:opacity-100"
+                            : `border-border ${sevColor[sev]} hover:border-primary/50`
+                        }`}
+                      >
+                        {sev} <span className="tabular-nums">{count}</span>
+                      </button>
+                    );
+                  })}
+                  {hiddenSeverities.size > 0 && (
+                    <button
+                      type="button"
+                      onClick={() => setHiddenSeverities(new Set())}
+                      className="shrink-0 text-[10px] font-mono uppercase tracking-wider text-primary hover:underline"
+                    >
+                      reset
+                    </button>
+                  )}
+                </div>
+              </div>
+            )}
+
+            {findings.length > 0 && visibleFindings.length === 0 && (
+              <div className="rounded-lg border border-dashed border-border bg-card-grad/40 p-8 text-center text-sm text-muted-foreground">
+                All findings hidden by severity filter.
+                <button onClick={() => setHiddenSeverities(new Set())} className="ml-2 text-primary hover:underline font-medium">
+                  Reset filter
+                </button>
               </div>
             )}
 
