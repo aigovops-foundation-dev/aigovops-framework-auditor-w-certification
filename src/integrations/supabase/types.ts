@@ -415,6 +415,7 @@ export type Database = {
         Row: {
           aos_version: string
           determination: string
+          expires_at: string
           id: string
           issued_at: string
           issued_by: string
@@ -425,6 +426,7 @@ export type Database = {
           qaga_assessor_id: string | null
           qaga_firm_id: string | null
           review_id: string
+          risk_tier: Database["public"]["Enums"]["risk_tier"] | null
           scenarios: Database["public"]["Enums"]["scenario_tag"][]
           scope_statement: string
           signature: string | null
@@ -432,6 +434,7 @@ export type Database = {
         Insert: {
           aos_version: string
           determination: string
+          expires_at?: string
           id?: string
           issued_at?: string
           issued_by: string
@@ -442,6 +445,7 @@ export type Database = {
           qaga_assessor_id?: string | null
           qaga_firm_id?: string | null
           review_id: string
+          risk_tier?: Database["public"]["Enums"]["risk_tier"] | null
           scenarios?: Database["public"]["Enums"]["scenario_tag"][]
           scope_statement: string
           signature?: string | null
@@ -449,6 +453,7 @@ export type Database = {
         Update: {
           aos_version?: string
           determination?: string
+          expires_at?: string
           id?: string
           issued_at?: string
           issued_by?: string
@@ -459,6 +464,7 @@ export type Database = {
           qaga_assessor_id?: string | null
           qaga_firm_id?: string | null
           review_id?: string
+          risk_tier?: Database["public"]["Enums"]["risk_tier"] | null
           scenarios?: Database["public"]["Enums"]["scenario_tag"][]
           scope_statement?: string
           signature?: string | null
@@ -549,6 +555,7 @@ export type Database = {
           bob_signature: string | null
           chain_manifest: Json
           determination: string
+          expires_at: string
           id: string
           issued_at: string
           issued_by: string | null
@@ -557,6 +564,10 @@ export type Database = {
           pdf_path: string | null
           pdf_sha256: string | null
           review_id: string
+          revoked_at: string | null
+          revoked_reason: string | null
+          risk_tier_declared: Database["public"]["Enums"]["risk_tier"] | null
+          risk_tier_derived: Database["public"]["Enums"]["risk_tier"] | null
           scenarios: Database["public"]["Enums"]["scenario_tag"][]
           scope_statement: string
           signature_kind: string
@@ -569,6 +580,7 @@ export type Database = {
           bob_signature?: string | null
           chain_manifest?: Json
           determination: string
+          expires_at?: string
           id?: string
           issued_at?: string
           issued_by?: string | null
@@ -577,6 +589,10 @@ export type Database = {
           pdf_path?: string | null
           pdf_sha256?: string | null
           review_id: string
+          revoked_at?: string | null
+          revoked_reason?: string | null
+          risk_tier_declared?: Database["public"]["Enums"]["risk_tier"] | null
+          risk_tier_derived?: Database["public"]["Enums"]["risk_tier"] | null
           scenarios?: Database["public"]["Enums"]["scenario_tag"][]
           scope_statement: string
           signature_kind?: string
@@ -589,6 +605,7 @@ export type Database = {
           bob_signature?: string | null
           chain_manifest?: Json
           determination?: string
+          expires_at?: string
           id?: string
           issued_at?: string
           issued_by?: string | null
@@ -597,6 +614,10 @@ export type Database = {
           pdf_path?: string | null
           pdf_sha256?: string | null
           review_id?: string
+          revoked_at?: string | null
+          revoked_reason?: string | null
+          risk_tier_declared?: Database["public"]["Enums"]["risk_tier"] | null
+          risk_tier_derived?: Database["public"]["Enums"]["risk_tier"] | null
           scenarios?: Database["public"]["Enums"]["scenario_tag"][]
           scope_statement?: string
           signature_kind?: string
@@ -991,6 +1012,7 @@ export type Database = {
           from_thread_id: string | null
           id: string
           overall_score: number | null
+          risk_tier_declared: Database["public"]["Enums"]["risk_tier"] | null
           scenarios: Database["public"]["Enums"]["scenario_tag"][]
           source_type: Database["public"]["Enums"]["source_type"]
           source_url: string | null
@@ -1008,6 +1030,7 @@ export type Database = {
           from_thread_id?: string | null
           id?: string
           overall_score?: number | null
+          risk_tier_declared?: Database["public"]["Enums"]["risk_tier"] | null
           scenarios?: Database["public"]["Enums"]["scenario_tag"][]
           source_type: Database["public"]["Enums"]["source_type"]
           source_url?: string | null
@@ -1025,6 +1048,7 @@ export type Database = {
           from_thread_id?: string | null
           id?: string
           overall_score?: number | null
+          risk_tier_declared?: Database["public"]["Enums"]["risk_tier"] | null
           scenarios?: Database["public"]["Enums"]["scenario_tag"][]
           source_type?: Database["public"]["Enums"]["source_type"]
           source_url?: string | null
@@ -1186,6 +1210,10 @@ export type Database = {
       claim_first_admin: { Args: never; Returns: boolean }
       compute_conformance: { Args: { _review_id: string }; Returns: Json }
       count_open_intake_threads: { Args: { _user: string }; Returns: number }
+      derive_risk_tier: {
+        Args: { _review_id: string }
+        Returns: Database["public"]["Enums"]["risk_tier"]
+      }
       has_role: {
         Args: {
           _role: Database["public"]["Enums"]["app_role"]
@@ -1241,6 +1269,7 @@ export type Database = {
         | "approved"
         | "rejected"
         | "failed"
+      risk_tier: "medium" | "high" | "critical"
       scenario_tag:
         | "enterprise_oss"
         | "healthcare_codegen"
@@ -1386,6 +1415,7 @@ export const Constants = {
         "rejected",
         "failed",
       ],
+      risk_tier: ["medium", "high", "critical"],
       scenario_tag: [
         "enterprise_oss",
         "healthcare_codegen",
