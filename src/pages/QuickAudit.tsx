@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useNavigate, useSearchParams } from "react-router-dom";
 import { AppShell } from "@/components/AppShell";
 import { PageHeader } from "@/components/ui/page-header";
 import { Button } from "@/components/ui/button";
@@ -13,6 +13,32 @@ import { useAuth } from "@/hooks/useAuth";
 import { useRoles } from "@/hooks/useRoles";
 import { usePageMeta } from "@/hooks/usePageMeta";
 import { NamedCameo, PersonaAvatar } from "@/components/agents/PersonaPrimitives";
+import { JourneyStepper } from "@/components/journey/JourneyStepper";
+
+type ScenarioTag = "enterprise_oss" | "healthcare_codegen" | "generative_ip" | "hr_behavior" | "general";
+
+const SCENARIO_GUIDE: Record<ScenarioTag, { label: string; guide: string; sample?: string }> = {
+  healthcare_codegen: {
+    label: "Healthcare AI",
+    guide: "You're shipping a model that touches patient care. We'll stress-test it for HIPAA, EU AI Act Article 6 (high-risk), and patient-harm edge cases. Paste the policy or system card that governs it.",
+  },
+  general: {
+    label: "AI Product Governance",
+    guide: "You're a founder shipping a GenAI product. We'll check policy completeness, dependency risk, and the worst-case failure for your end user. Paste the policy bundle that governs the feature.",
+  },
+  enterprise_oss: {
+    label: "Enterprise OSS / Auditor pack",
+    guide: "Auditing AI inside a regulated org — or certifying a client's. We'll map findings to SOC 2, ISO 42001, and AOS controls so you can hand the report to a partner.",
+  },
+  generative_ip: {
+    label: "Generative IP",
+    guide: "You're producing music, art, or video. We'll audit the copyright assertion chain end-to-end.",
+  },
+  hr_behavior: {
+    label: "HR & insurable risk",
+    guide: "You're shipping AI that touches hiring, evaluation, or employee behavior. We'll surface EEOC, harassment, and bias exposure.",
+  },
+};
 
 const SAMPLE = `package aigovops.openclaw
 
