@@ -56,7 +56,7 @@ export const HitlQueue = ({ rows, personaIndex, loading, pendingCount, onPick }:
             className="relative w-full text-left p-4 hover:bg-secondary/40 transition-colors"
             style={
               accent
-                ? ({ ["--row-accent" as string]: accent } as React.CSSProperties)
+                ? ({ ["--row-accent" as string]: accent } as CSSProperties)
                 : undefined
             }
           >

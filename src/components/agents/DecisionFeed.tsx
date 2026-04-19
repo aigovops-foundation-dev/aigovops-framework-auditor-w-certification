@@ -60,7 +60,7 @@ export const DecisionFeed = ({ rows, personaIndex, loading }: Props) => (
             className="relative p-4 transition-colors hover:bg-secondary/20"
             style={
               accent
-                ? ({ ["--row-accent" as string]: accent } as React.CSSProperties)
+                ? ({ ["--row-accent" as string]: accent } as CSSProperties)
                 : undefined
             }
           >
