@@ -121,6 +121,32 @@ Deno.serve(async (req) => {
     const bob = chiefs?.find((p) => p.slug === "bob-smith");
     if (!ken || !bob) throw new Error("Chief auditors Ken and Bob must exist");
 
+    // Fetch chief portraits from the public agent-portraits bucket.
+    // Embedded as base64 JPEG on the signature page. Falls back to vector
+    // silhouette if the fetch fails so PDF generation never blocks.
+    const portraitBase = `${SUPABASE_URL}/storage/v1/object/public/agent-portraits`;
+    const fetchPortraitDataUrl = async (slug: string): Promise<string | null> => {
+      try {
+        const res = await fetch(`${portraitBase}/${slug}.jpg`);
+        if (!res.ok) return null;
+        const buf = new Uint8Array(await res.arrayBuffer());
+        // Base64-encode in chunks to avoid call-stack overflow on large images.
+        let bin = "";
+        const CHUNK = 0x8000;
+        for (let i = 0; i < buf.length; i += CHUNK) {
+          bin += String.fromCharCode(...buf.subarray(i, i + CHUNK));
+        }
+        return `data:image/jpeg;base64,${btoa(bin)}`;
+      } catch (err) {
+        console.warn(`portrait fetch failed for ${slug}:`, err);
+        return null;
+      }
+    };
+    const [kenPortrait, bobPortrait] = await Promise.all([
+      fetchPortraitDataUrl("ken-newton"),
+      fetchPortraitDataUrl("bob-smith"),
+    ]);
+
     // Snapshot full chain-of-custody manifest at issue time (every audit row for review).
     const { data: chainRows } = await admin.from("audit_log")
       .select("id, event, actor_kind, actor_id, payload, prev_hash, entry_hash, signature, created_at")
