@@ -72,6 +72,21 @@ const Demo = () => {
           ))}
         </div>
         <div className="flex items-center gap-2">
+          <div className="hidden sm:flex items-center gap-0.5 mr-1 rounded border border-border bg-muted/30 p-0.5">
+            {([0.5, 1, 2] as const).map((s) => (
+              <button
+                key={s}
+                onClick={() => setSpeed(s)}
+                className={`text-[10px] font-mono uppercase tracking-wider px-2 py-1 rounded transition-colors ${
+                  s === speed ? "bg-primary/15 text-primary" : "text-muted-foreground hover:text-foreground"
+                }`}
+                aria-pressed={s === speed}
+                title={`Playback speed ${s}x`}
+              >
+                {s}x
+              </button>
+            ))}
+          </div>
           <Button size="sm" variant="ghost" onClick={prev} disabled={idx === 0}><ArrowLeft className="h-4 w-4" /></Button>
           <Button size="sm" variant="ghost" onClick={() => setPaused((p) => !p)}>
             {paused ? <Play className="h-4 w-4" /> : <Pause className="h-4 w-4" />}
