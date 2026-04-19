@@ -32,6 +32,7 @@ const AosSpec = lazy(() => import("./pages/AosSpec"));
 const RiskScenarios = lazy(() => import("./pages/RiskScenarios"));
 const Canary = lazy(() => import("./pages/Canary"));
 const Operations = lazy(() => import("./pages/Operations"));
+const OssLaunch = lazy(() => import("./pages/OssLaunch"));
 const Vocabulary = lazy(() => import("./pages/Vocabulary"));
 const Agents = lazy(() => import("./pages/Agents"));
 const AgentsDashboard = lazy(() => import("./pages/AgentsDashboard"));
@@ -75,6 +76,7 @@ const App = () => (
               <Route path="/docs/risk-scenarios" element={<RiskScenarios />} />
               <Route path="/docs/canary" element={<Canary />} />
               <Route path="/docs/operations" element={<Operations />} />
+              <Route path="/docs/oss-launch" element={<OssLaunch />} />
               <Route path="/docs/vocabulary" element={<Vocabulary />} />
               <Route path="/vocabulary" element={<Vocabulary />} />
               <Route path="/docs/:slug" element={<DocViewer />} />

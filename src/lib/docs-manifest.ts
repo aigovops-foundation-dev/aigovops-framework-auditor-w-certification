@@ -1,4 +1,4 @@
-import { FileText, FileQuestion, FileBadge, Presentation, BookOpen, Image as ImageIcon, AlertTriangle, ShieldCheck, Wrench, BookA, type LucideIcon } from "lucide-react";
+import { FileText, FileQuestion, FileBadge, Presentation, BookOpen, Image as ImageIcon, AlertTriangle, ShieldCheck, Wrench, BookA, ListChecks, type LucideIcon } from "lucide-react";
 
 export type DocKind = "markdown" | "pdf" | "pptx" | "docx" | "yaml" | "png";
 
@@ -131,6 +131,18 @@ export const DOCS: DocEntry[] = [
     updated: "2026-04-19",
     icon: Wrench,
     route: "/docs/operations",
+  },
+  {
+    id: "oss-launch",
+    title: "OSS Launch Checklist",
+    description:
+      "Every governance file the framework ships with — LICENSE, NOTICE, SECURITY, GOVERNANCE, CONTRIBUTING, CODE_OF_CONDUCT, CHANGELOG, About, Security. One page, one link per file.",
+    kind: "markdown",
+    badge: "OSS",
+    size: "live",
+    updated: "2026-04-19",
+    icon: ListChecks,
+    route: "/docs/oss-launch",
   },
 ];
 
