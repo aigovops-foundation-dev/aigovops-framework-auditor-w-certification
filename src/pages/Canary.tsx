@@ -35,9 +35,18 @@ const CopyHashButton = ({ hash, path }: CopyHashButtonProps) => {
     try {
       await navigator.clipboard.writeText(hash);
       setCopied(true);
+      const preview = `${hash.slice(0, 6)}…${hash.slice(-4)}`;
       toast({
         title: "SHA-256 copied",
-        description: path,
+        description: (
+          <span className="block">
+            <span className="block truncate">{path}</span>
+            <span className="mt-1 block font-mono text-xs text-muted-foreground">
+              Copied: {preview}
+            </span>
+          </span>
+        ),
+        duration: 2000,
       });
       setTimeout(() => setCopied(false), 1500);
     } catch {
