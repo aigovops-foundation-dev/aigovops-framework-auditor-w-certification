@@ -83,9 +83,11 @@ Deno.serve(async (req) => {
     // ---------- Compliance certifications (Ken + Bob co-signed) ----------
     const { data: certs } = await admin
       .from("certifications")
-      .select("id, determination, organization, scope_statement, aos_version, scenarios, pdf_path, pdf_sha256, ken_signature, bob_signature, signature_kind, trigger_kind, audit_prev_hash, audit_entry_hash, chain_manifest, issued_at")
+      .select("id, determination, organization, scope_statement, aos_version, scenarios, pdf_path, pdf_sha256, ken_signature, bob_signature, signature_kind, trigger_kind, audit_prev_hash, audit_entry_hash, chain_manifest, issued_at, risk_tier_declared, risk_tier_derived, expires_at, revoked_at, revoked_reason")
       .eq("review_id", reviewId)
       .order("issued_at", { ascending: false });
+
+    const now = Date.now();
 
     // Re-fetch each PDF and recompute its SHA-256 to confirm storage integrity.
     // Anchor verification: the cert's audit_entry_hash must exist in the live audit chain.
@@ -108,6 +110,9 @@ Deno.serve(async (req) => {
       }
       const anchorOk = !!c.audit_entry_hash &&
         (entries ?? []).some((e) => e.entry_hash === c.audit_entry_hash);
+      const expiresMs = c.expires_at ? new Date(c.expires_at).getTime() : null;
+      const expired = expiresMs !== null && expiresMs < now;
+      const status = c.revoked_at ? "revoked" : expired ? "expired" : "active";
       return {
         id: c.id,
         determination: c.determination,
@@ -128,6 +133,15 @@ Deno.serve(async (req) => {
         pdf_sha256_live: pdfHashLive,
         pdf_hash_ok: pdfHashOk,
         anchor_ok: anchorOk,
+        risk_tier_declared: c.risk_tier_declared,
+        risk_tier_derived: c.risk_tier_derived,
+        risk_tier_disagreement: !!c.risk_tier_declared && !!c.risk_tier_derived
+          && c.risk_tier_declared !== c.risk_tier_derived,
+        expires_at: c.expires_at,
+        revoked_at: c.revoked_at,
+        revoked_reason: c.revoked_reason,
+        status,
+        days_until_expiry: expiresMs !== null ? Math.round((expiresMs - now) / 86_400_000) : null,
       };
     }));
 
