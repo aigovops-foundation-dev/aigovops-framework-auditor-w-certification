@@ -78,6 +78,7 @@ export function PublicShell({ children, eyebrow = "Review Framework", rightSlot,
               </div>
               <div className="flex items-center gap-4 flex-wrap justify-center">
                 <Link to="/about" className="hover:text-foreground transition-colors">About</Link>
+                <Link to="/security" className="hover:text-foreground transition-colors">Security</Link>
                 <Link to="/docs" className="hover:text-foreground transition-colors">Docs</Link>
                 <Link to="/docs/vocabulary" className="hover:text-foreground transition-colors">Vocabulary</Link>
                 <Link to="/developers" className="hover:text-foreground transition-colors">Developers</Link>
