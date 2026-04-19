@@ -283,7 +283,16 @@ const AgentChat = () => {
         </aside>
 
         {/* Conversation */}
-        <main className="flex-1 flex flex-col bg-background">
+        <main className="flex-1 flex flex-col bg-background relative">
+          {/* Aurora wash behind the conversation column */}
+          <div
+            aria-hidden
+            className="pointer-events-none absolute inset-0 -z-10 opacity-60"
+            style={{
+              background:
+                "radial-gradient(ellipse 60% 50% at 20% 0%, hsl(248 70% 22% / 0.55), transparent 60%), radial-gradient(ellipse 60% 50% at 100% 100%, hsl(160 70% 28% / 0.30), transparent 65%)",
+            }}
+          />
           {!activeThread ? (
             <div className="flex-1 grid place-items-center text-center px-6">
               <div className="max-w-md space-y-3">
@@ -307,6 +316,31 @@ const AgentChat = () => {
           ) : (
             <>
               <header className="border-b border-border">
+                {/* On-duty banner */}
+                <div className="flex items-center justify-between gap-3 px-4 py-2 border-b border-border/60 bg-card/40 backdrop-blur-sm">
+                  <div className="flex items-center gap-2">
+                    <span className="relative flex h-2 w-2">
+                      <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-primary opacity-75" />
+                      <span className="relative inline-flex rounded-full h-2 w-2 bg-primary" />
+                    </span>
+                    <span className="text-[10px] font-mono uppercase tracking-[0.2em] text-primary/90">
+                      The council, on duty
+                    </span>
+                  </div>
+                  {activeThread.kind === "intake" ? (
+                    <div className="flex items-center gap-2 text-[11px] font-mono text-muted-foreground">
+                      <span className="text-foreground/85 font-semibold">Ken Newton</span>
+                      <ArrowRight className="h-3 w-3 text-warning" />
+                      <span className="text-foreground/85 font-semibold">Bob Smith</span>
+                      <span className="hidden sm:inline">· chief auditors co-own this intake</span>
+                    </div>
+                  ) : (
+                    <div className="text-[11px] font-mono text-muted-foreground hidden sm:block">
+                      Live handoffs between specialists
+                    </div>
+                  )}
+                </div>
+
                 {/* 3D portrait stage */}
                 <PortraitStage
                   speakerSlug={activeSpeakerSlug}
@@ -331,7 +365,7 @@ const AgentChat = () => {
                         <img
                           key={pid} src={portraitFor(p.slug)} alt={p.display_name}
                           title={p.display_name}
-                          className={`h-8 w-8 rounded object-cover object-top border ${p.is_chief ? "border-warning" : "border-border"}`}
+                          className={`h-8 w-8 rounded object-cover object-top border ${p.is_chief ? "border-warning shadow-[0_0_0_1px_hsl(var(--warning)/0.35)]" : "border-border"}`}
                         />
                       );
                     })}

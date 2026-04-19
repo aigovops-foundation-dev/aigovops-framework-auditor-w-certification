@@ -137,29 +137,38 @@ export const PortraitStage = ({
 
   return (
     <div className={`relative overflow-hidden ${className ?? ""}`}>
+      {/* Aurora gradient backdrop — matches the rest of the design system */}
+      <div
+        aria-hidden
+        className="pointer-events-none absolute inset-0 -z-10"
+        style={{
+          background:
+            "radial-gradient(ellipse 80% 60% at 30% 30%, hsl(248 70% 22% / 0.85), transparent 60%), radial-gradient(ellipse 70% 60% at 75% 70%, hsl(160 70% 28% / 0.55), transparent 65%), linear-gradient(180deg, hsl(240 35% 6%), hsl(240 40% 4%))",
+        }}
+      />
       <Canvas
         shadows
         dpr={[1, 2]}
         camera={{ position: [0, 0.1, 4.6], fov: 38 }}
         onCreated={({ gl }) => {
           try {
-            gl.setClearColor(new THREE.Color("#0a0d18"), 1);
+            gl.setClearColor(new THREE.Color("#0a0d18"), 0); // transparent — let aurora show
           } catch {
             setGlError(true);
           }
         }}
-        gl={{ antialias: true, alpha: false, powerPreference: "high-performance" }}
+        gl={{ antialias: true, alpha: true, powerPreference: "high-performance" }}
         fallback={<div className="text-xs text-muted-foreground p-4">3D unavailable</div>}
       >
         <Suspense fallback={null}>
-          <ambientLight intensity={0.55} />
+          <ambientLight intensity={0.6} />
           <directionalLight
             position={[2.5, 3, 4]}
-            intensity={1.2}
+            intensity={1.25}
             castShadow
-            color={isChief ? "#fff3cf" : "#dce6ff"}
+            color={isChief ? "#fff3cf" : "#c9d8ff"}
           />
-          <directionalLight position={[-3, -1, 2]} intensity={0.4} color="#5a7fb8" />
+          <directionalLight position={[-3, -1, 2]} intensity={0.5} color="#7aa2f7" />
           <Environment preset="city" />
           <PortraitBust src={src} isChief={isChief} />
           <CameraDolly trigger={speakerSlug} />

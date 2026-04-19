@@ -6,12 +6,13 @@ import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { Badge } from "@/components/ui/badge";
 import { Card } from "@/components/ui/card";
-import { Loader2, Sparkles, Zap, Crown, ArrowRight, AlertTriangle, ShieldCheck, Play } from "lucide-react";
+import { Loader2, Sparkles, Zap, Crown, ArrowRight, AlertTriangle, ShieldCheck, Play, Gauge } from "lucide-react";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
 import { useRoles } from "@/hooks/useRoles";
 import { usePageMeta } from "@/hooks/usePageMeta";
+import { NamedCameo, PersonaAvatar } from "@/components/agents/PersonaPrimitives";
 
 const SAMPLE = `package aigovops.openclaw
 
@@ -61,6 +62,7 @@ const QuickAudit = () => {
   const [reviewId, setReviewId] = useState<string | null>(null);
   const [findings, setFindings] = useState<Finding[]>([]);
   const [overall, setOverall] = useState<number | null>(null);
+  const [derivedTier, setDerivedTier] = useState<"medium" | "high" | "critical" | null>(null);
   const [lastRunAt, setLastRunAt] = useState<Date | null>(null);
 
   // Cooldown: 1 free run / 24h (bypass for admin + curator)
@@ -102,6 +104,7 @@ const QuickAudit = () => {
     setBusy(true);
     setFindings([]);
     setOverall(null);
+    setDerivedTier(null);
     try {
       // 1. Create review (locked to enterprise_oss)
       const { data: review, error: rErr } = await supabase
@@ -154,6 +157,14 @@ const QuickAudit = () => {
       const { data: rRow } = await supabase
         .from("reviews").select("overall_score").eq("id", review.id).maybeSingle();
       setOverall(rRow?.overall_score ?? null);
+
+      // 6. Ask Florence Nightingale (via derive_risk_tier RPC) for an evidence-derived tier
+      try {
+        const { data: tier } = await supabase.rpc("derive_risk_tier", { _review_id: review.id });
+        if (tier) setDerivedTier(tier as "medium" | "high" | "critical");
+      } catch {
+        // non-fatal — tier badge just won't render
+      }
     } catch (e: unknown) {
       const msg = e instanceof Error ? e.message : "Quick audit failed";
       toast.error(msg);
@@ -162,28 +173,65 @@ const QuickAudit = () => {
     }
   };
 
+  const tierTone: Record<string, string> = {
+    medium: "bg-primary/10 text-primary border-primary/30",
+    high: "bg-warning/15 text-warning border-warning/40",
+    critical: "bg-destructive/10 text-destructive border-destructive/40",
+  };
+
   return (
     <AppShell>
-      <div className="p-8 max-w-5xl mx-auto">
-        <PageHeader
-          eyebrow="Free · Enterprise OSS scenario"
-          title="Quick Audit"
-          description="Paste any policy-as-code, and the Agent Council runs a real audit. One free run every 24h — full attestation requires a chartered QAGA assessor."
-          actions={
-            <div className="flex items-center gap-2">
-              <Link to="/demo/enterprise_oss">
-                <Button variant="outline">
-                  <Play className="h-4 w-4 mr-1.5" /> Watch the demo
-                </Button>
-              </Link>
-              <Link to="/submit">
-                <Button variant="secondary">
-                  Full review <ArrowRight className="h-4 w-4 ml-1.5" />
-                </Button>
-              </Link>
-            </div>
-          }
+      <div className="relative">
+        {/* Aurora wash */}
+        <div
+          aria-hidden
+          className="pointer-events-none absolute inset-0 -z-10 opacity-70"
+          style={{
+            background:
+              "radial-gradient(ellipse 70% 50% at 15% 0%, hsl(248 70% 22% / 0.55), transparent 65%), radial-gradient(ellipse 60% 50% at 100% 30%, hsl(160 70% 28% / 0.30), transparent 70%)",
+          }}
         />
+        <div className="p-8 max-w-5xl mx-auto">
+          <PageHeader
+            eyebrow="Free · Enterprise OSS scenario"
+            title="Quick Audit"
+            description="Paste any policy-as-code, and the Agent Council runs a real audit. One free run every 24h — full attestation requires a chartered QAGA assessor."
+            actions={
+              <div className="flex items-center gap-2">
+                <Link to="/demo/enterprise_oss">
+                  <Button variant="outline">
+                    <Play className="h-4 w-4 mr-1.5" /> Watch the demo
+                  </Button>
+                </Link>
+                <Link to="/submit">
+                  <Button variant="secondary">
+                    Full review <ArrowRight className="h-4 w-4 ml-1.5" />
+                  </Button>
+                </Link>
+              </div>
+            }
+          />
+
+          {/* Ken intake cameo banner */}
+          <div className="mb-6 rounded-2xl border border-border bg-card/60 backdrop-blur-sm p-4 flex items-center gap-4 shadow-glow">
+            <PersonaAvatar slug="ken-newton" size="lg" />
+            <div className="flex-1 min-w-0">
+              <div className="text-[10px] font-mono uppercase tracking-[0.2em] text-warning flex items-center gap-1.5">
+                <Crown className="h-3 w-3" /> Ken Newton · Chief auditor on intake
+              </div>
+              <h2 className="text-lg font-semibold mt-0.5">
+                Paste your policy. I'll convene the council.
+              </h2>
+              <p className="text-sm text-muted-foreground">
+                Eight specialists score it against the active AOS catalog. Florence Nightingale derives an evidence-based risk tier. Bob co-signs only if it's defensible.
+              </p>
+            </div>
+            <Link to="/agents/chat" className="hidden md:inline-block">
+              <Button variant="ghost" size="sm">
+                Talk to Ken first <ArrowRight className="h-4 w-4 ml-1.5" />
+              </Button>
+            </Link>
+          </div>
 
         <div className="grid lg:grid-cols-5 gap-6">
           <Card className="lg:col-span-3 p-4 bg-card-grad">
@@ -234,6 +282,27 @@ const QuickAudit = () => {
                   <Badge className="font-mono text-[10px]">overall score</Badge>
                 </div>
               )}
+
+              {/* Florence Nightingale derived risk-tier badge */}
+              {!busy && derivedTier && (
+                <div className="mt-3 flex items-start gap-3 rounded-lg border border-border bg-background/40 p-3">
+                  <PersonaAvatar slug="nightingale" size="sm" />
+                  <div className="min-w-0 flex-1">
+                    <div className="text-[10px] font-mono uppercase tracking-wider text-primary/80 flex items-center gap-1">
+                      <Gauge className="h-3 w-3" /> Florence Nightingale · derived tier
+                    </div>
+                    <div className="mt-1 flex items-center gap-2">
+                      <Badge className={`font-mono text-[10px] border ${tierTone[derivedTier]}`}>
+                        {derivedTier}
+                      </Badge>
+                      <span className="text-[11px] text-muted-foreground">
+                        evidence-weighted, independent of any declared tier
+                      </span>
+                    </div>
+                  </div>
+                </div>
+              )}
+
               {!busy && reviewId && (
                 <Link to={`/review/${reviewId}`} className="text-xs font-mono text-primary hover:underline mt-3 inline-block">
                   open full review →
@@ -248,6 +317,9 @@ const QuickAudit = () => {
                   <div className="font-semibold">Need a signed AOC?</div>
                   <div className="text-sm text-muted-foreground mt-1">
                     A chartered <Link to="/registry" className="text-primary hover:underline">QAGA assessor</Link> can issue a tamper-evident attestation with hash chain + PDF export.
+                  </div>
+                  <div className="mt-2 text-[11px] font-mono text-muted-foreground">
+                    Co-signed by <NamedCameo slug="ken-newton" size="xs" /> and <NamedCameo slug="bob-smith" size="xs" />.
                   </div>
                 </div>
               </div>
@@ -293,6 +365,7 @@ const QuickAudit = () => {
             </div>
           </section>
         )}
+        </div>
       </div>
     </AppShell>
   );
