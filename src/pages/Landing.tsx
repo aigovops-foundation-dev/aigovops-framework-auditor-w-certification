@@ -108,6 +108,11 @@ const Landing = () => {
                     <Play className="h-3.5 w-3.5 mr-1.5" /> Watch 90-sec demo
                   </Button>
                 </Link>
+                <a href={FOUNDATION.stripeDonate.pickYourAmount} target="_blank" rel="noreferrer">
+                  <Button size="sm" variant="ghost" className="text-primary hover:text-primary hover:bg-primary/10">
+                    <Heart className="h-3.5 w-3.5 mr-1.5" /> Donate to the Foundation
+                  </Button>
+                </a>
               </div>
             </div>
 
