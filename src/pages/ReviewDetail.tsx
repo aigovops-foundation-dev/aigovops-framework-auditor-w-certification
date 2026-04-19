@@ -353,6 +353,7 @@ const ReviewDetail = () => {
             )}
           </TabsContent>
         </Tabs>
+        </div>
       </div>
     </AppShell>
   );
