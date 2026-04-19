@@ -17,13 +17,13 @@ import {
 import { DocsSection } from "@/components/DocsSection";
 import { PublicShell } from "@/components/PublicShell";
 import { usePageMeta } from "@/hooks/usePageMeta";
-import { FOUNDATION, PROJECT } from "@/lib/config";
+import { FOUNDATION, PROJECT, STANDARD } from "@/lib/config";
 
 const Landing = () => {
   usePageMeta({
-    title: "AiGovOps Review Framework — Policy-as-Code, audited & sealed",
+    title: "AiGovOps Review Framework — Agents review. Humans decide. Math proves.",
     description:
-      "Run your AI governance policy bundle through agent reviewers, attest with a chartered human, and seal every step in an HMAC-SHA256 audit chain anyone can verify.",
+      "Reference implementation of the AiGovOps Open Standard (AOS). SLSA-style signed attestations for AI governance — verified by anyone, priceable by insurers, hostable at OpenSSF.",
     canonical: "/",
     jsonLd: {
       "@context": "https://schema.org",
@@ -41,14 +41,15 @@ const Landing = () => {
     <PublicShell>
       <section className="container max-w-6xl mx-auto pt-16 pb-16 text-center">
         <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full border border-border bg-card-grad text-xs font-mono text-muted-foreground mb-6">
-          <span className="pulse-dot" /> 10-agent council · signed audit chain
+          <span className="pulse-dot" /> Reference implementation · {STANDARD.longName} {STANDARD.version}
         </div>
         <h1 className="text-5xl md:text-6xl font-bold tracking-tight leading-[1.05] max-w-4xl mx-auto">
-          Audit your AI policy in <span className="text-emerald-grad">90 seconds</span>.
+          Agents review. Humans decide. <span className="text-emerald-grad">Math proves.</span>
         </h1>
         <p className="mt-6 text-lg text-muted-foreground max-w-2xl mx-auto">
-          Paste a policy, watch the council debate it, and get a signed determination.
-          Free quick audit — full attestation by a chartered QAGA assessor.
+          SLSA-style signed attestations, applied to AI governance. A 10-agent council assesses your
+          policy, a chartered human approves, and an HMAC-chained audit trail any third party can
+          verify — without your cooperation.
         </p>
 
         <div className="mt-10 grid sm:grid-cols-2 lg:grid-cols-4 gap-4 max-w-5xl mx-auto text-left">
@@ -82,10 +83,16 @@ const Landing = () => {
 
         <div className="mt-6 flex flex-wrap items-center justify-center gap-2 text-[10px] font-mono uppercase tracking-wider text-muted-foreground">
           <span className="border border-border rounded px-2 py-0.5">Apache-2.0</span>
-          <span className="border border-border rounded px-2 py-0.5">AOS v0.1</span>
+          <span className="border border-border rounded px-2 py-0.5">{STANDARD.shortName} {STANDARD.version}</span>
+          <span className="border border-border rounded px-2 py-0.5">SLSA-style attestations</span>
           <span className="border border-border rounded px-2 py-0.5">Audit Chain Verified</span>
           <span className="border border-border rounded px-2 py-0.5">{FOUNDATION.name}</span>
         </div>
+
+        <p className="mt-5 text-[11px] font-mono text-muted-foreground max-w-2xl mx-auto">
+          One horizontal standard. Orthogonal risk tier. Vertical scenario packs.
+          Insurers can price one evidence format across an entire portfolio.
+        </p>
       </section>
 
       <DocsSection />
@@ -104,7 +111,7 @@ const Landing = () => {
 
       <section className="container max-w-6xl mx-auto pb-24">
         <div className="text-xs font-mono uppercase text-muted-foreground tracking-wider mb-3">
-          Hardened against
+          Scenario packs · contextual stress tests loaded over the horizontal {STANDARD.shortName} pipeline
         </div>
         <div className="grid md:grid-cols-4 gap-3">
           {scenarios.map((s) => (
@@ -115,6 +122,10 @@ const Landing = () => {
             </div>
           ))}
         </div>
+        <p className="mt-3 text-[11px] font-mono text-muted-foreground">
+          Scenario packs <em>extend coverage</em>. They never fork the standard — every review runs the
+          same {STANDARD.shortName} pipeline regardless of vertical.
+        </p>
       </section>
     </PublicShell>
   );
@@ -123,8 +134,8 @@ const Landing = () => {
 const agentCards = [
   { icon: ScanLine, title: "Policy Linter", body: "Parses Rego, YAML, JSON, Cedar. Flags syntax errors, unsafe defaults, missing metadata." },
   { icon: Brain, title: "Risk & Ethics Assessor", body: "Scores bias, transparency, oversight, hallucination risk, data minimization." },
-  { icon: Scale, title: "Compliance Mapper", body: "Maps clauses to EU AI Act, NIST AI RMF, ISO 42001, SOC 2, HIPAA." },
-  { icon: FileLock, title: "Scenario Risk Analyst", body: "Stress-tests against legal, insurable & HR-risk deployment scenarios." },
+  { icon: Scale, title: "Compliance Mapper", body: "Maps clauses to EU AI Act, NIST AI RMF, ISO 42001, SOC 2, HIPAA, NAIC AI Bulletin." },
+  { icon: FileLock, title: "Scenario Pack Analyst", body: "Loads vertical scenario packs (healthcare, IP, HR, OSS) over the horizontal pipeline." },
   { icon: Stamp, title: "Human-in-the-Loop", body: "Reviewer approves, rejects or requests changes — every action signed." },
   { icon: Activity, title: "Append-only Audit Log", body: "Every agent run + decision recorded for evidence-grade compliance." },
 ];

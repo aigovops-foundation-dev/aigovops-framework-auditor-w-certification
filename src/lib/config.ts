@@ -17,9 +17,25 @@ export const FOUNDATION = {
 
 export const PROJECT = {
   name: "AiGovOps Review Framework",
-  tagline: "Policy-as-code, reviewed by agents, attested by humans, sealed by a chain.",
+  /** Always frame the platform as a reference implementation of AOS, not as the standard itself. */
+  positioning: "Reference implementation of the AiGovOps Open Standard (AOS).",
+  tagline: "Agents review. Humans decide. Math proves.",
+  subTagline: "Policy-as-code, reviewed by agents, attested by humans, sealed by a chain.",
   publishedUrl: "https://aigovops-framework-auditor-w-certification.lovable.app",
   repoUrl: "https://github.com/aigovopsfoundation/aigovops-review-framework",
+  verifierPackage: "@aigovops/verify",
+} as const;
+
+/** The standard itself — versioned separately from this implementation. */
+export const STANDARD = {
+  shortName: "AOS",
+  longName: "AiGovOps Open Standard",
+  version: "v0.1",
+  status: "draft",
+  /** Live precedent we lead with externally. PCI-DSS is the older precedent. */
+  livePrecedent: "SLSA + Sigstore + in-toto (OpenSSF)",
+  legacyPrecedent: "PCI-DSS (the older practitioner-owned standard model)",
+  intendedHome: "OpenSSF (Linux Foundation), as a sibling to SLSA / Sigstore / in-toto",
 } as const;
 
 /** Edge function base URL — derived from Supabase project id. */
