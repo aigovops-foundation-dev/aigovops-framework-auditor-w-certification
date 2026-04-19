@@ -15,7 +15,7 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Badge } from "@/components/ui/badge";
 import { toast } from "sonner";
-import { ShieldCheck, Loader2, Download, ExternalLink, Sparkles } from "lucide-react";
+import { ShieldCheck, Loader2, Download, ExternalLink, Sparkles, Clock, AlertTriangle } from "lucide-react";
 
 const SUPABASE_URL = `https://${import.meta.env.VITE_SUPABASE_PROJECT_ID}.supabase.co`;
 
@@ -32,12 +32,22 @@ interface CertRow {
   trigger_kind: string;
   audit_entry_hash: string | null;
   issued_at: string;
+  expires_at: string | null;
+  revoked_at: string | null;
+  risk_tier_declared: string | null;
+  risk_tier_derived: string | null;
 }
 
 const verdictTone: Record<string, string> = {
   pass: "bg-emerald-500/15 text-emerald-700 dark:text-emerald-300 border-emerald-500/30",
   pass_with_compensations: "bg-amber-500/15 text-amber-700 dark:text-amber-300 border-amber-500/30",
   fail: "bg-destructive/15 text-destructive border-destructive/30",
+};
+
+const tierTone: Record<string, string> = {
+  medium: "bg-sky-500/15 text-sky-700 dark:text-sky-300 border-sky-500/30",
+  high: "bg-amber-500/15 text-amber-700 dark:text-amber-300 border-amber-500/30",
+  critical: "bg-destructive/15 text-destructive border-destructive/30",
 };
 
 export const CertificationPanel = ({ reviewId }: { reviewId: string }) => {
@@ -49,7 +59,7 @@ export const CertificationPanel = ({ reviewId }: { reviewId: string }) => {
   const load = async () => {
     const { data } = await supabase
       .from("certifications")
-      .select("id, determination, organization, scope_statement, pdf_path, pdf_sha256, ken_signature, bob_signature, signature_kind, trigger_kind, audit_entry_hash, issued_at")
+      .select("id, determination, organization, scope_statement, pdf_path, pdf_sha256, ken_signature, bob_signature, signature_kind, trigger_kind, audit_entry_hash, issued_at, expires_at, revoked_at, risk_tier_declared, risk_tier_derived")
       .eq("review_id", reviewId)
       .order("issued_at", { ascending: false });
     setCerts((data ?? []) as CertRow[]);
@@ -106,6 +116,13 @@ export const CertificationPanel = ({ reviewId }: { reviewId: string }) => {
           ? `${SUPABASE_URL}/storage/v1/object/public/attestations/${cert.pdf_path}`
           : null;
         const verifyUrl = `${window.location.origin}/verify/${reviewId}`;
+        const expiresMs = cert.expires_at ? new Date(cert.expires_at).getTime() : null;
+        const daysLeft = expiresMs !== null ? Math.round((expiresMs - Date.now()) / 86_400_000) : null;
+        const expired = daysLeft !== null && daysLeft < 0;
+        const expiringSoon = daysLeft !== null && daysLeft >= 0 && daysLeft < 30;
+        const revoked = !!cert.revoked_at;
+        const tierDisagree = cert.risk_tier_declared && cert.risk_tier_derived
+          && cert.risk_tier_declared !== cert.risk_tier_derived;
         return (
           <div key={cert.id} className="rounded-lg border border-border bg-card-grad p-4 space-y-3">
             <div className="flex items-center justify-between flex-wrap gap-2">
@@ -117,6 +134,19 @@ export const CertificationPanel = ({ reviewId }: { reviewId: string }) => {
                   {cert.trigger_kind === "auto" ? "auto" : "manual"}
                 </Badge>
                 <Badge variant="outline" className="font-mono text-[10px]">{cert.signature_kind}</Badge>
+                {revoked ? (
+                  <Badge variant="outline" className="bg-destructive/15 text-destructive border-destructive/30 font-mono text-[10px]">REVOKED</Badge>
+                ) : expired ? (
+                  <Badge variant="outline" className="bg-destructive/15 text-destructive border-destructive/30 font-mono text-[10px]">EXPIRED</Badge>
+                ) : expiringSoon ? (
+                  <Badge variant="outline" className="bg-amber-500/15 text-amber-700 dark:text-amber-300 border-amber-500/30 font-mono text-[10px]">
+                    <Clock className="h-2.5 w-2.5 mr-1" />{daysLeft}d left
+                  </Badge>
+                ) : daysLeft !== null ? (
+                  <Badge variant="outline" className="font-mono text-[10px]">
+                    <Clock className="h-2.5 w-2.5 mr-1" />{daysLeft}d left
+                  </Badge>
+                ) : null}
                 <span className="text-xs text-muted-foreground">{new Date(cert.issued_at).toLocaleString()}</span>
               </div>
               <div className="flex gap-2">
@@ -134,6 +164,44 @@ export const CertificationPanel = ({ reviewId }: { reviewId: string }) => {
                 </Button>
               </div>
             </div>
+
+            {/* Risk tier — declared vs derived */}
+            <div className="rounded-md border border-border/60 bg-muted/30 p-3 space-y-2">
+              <div className="text-[11px] uppercase tracking-wider text-muted-foreground">Risk tier</div>
+              <div className="flex items-center gap-2 flex-wrap text-xs">
+                <span className="text-muted-foreground">Submitter declared:</span>
+                {cert.risk_tier_declared ? (
+                  <Badge variant="outline" className={tierTone[cert.risk_tier_declared] ?? ""}>{cert.risk_tier_declared}</Badge>
+                ) : <span className="text-muted-foreground italic">not declared</span>}
+                <span className="text-muted-foreground">·  Agent derived:</span>
+                {cert.risk_tier_derived ? (
+                  <Badge variant="outline" className={tierTone[cert.risk_tier_derived] ?? ""}>{cert.risk_tier_derived}</Badge>
+                ) : <span className="text-muted-foreground italic">—</span>}
+                {tierDisagree && (
+                  <span className="flex items-center gap-1 text-amber-600 dark:text-amber-400 text-[11px] ml-1">
+                    <AlertTriangle className="h-3 w-3" /> underwriting signal
+                  </span>
+                )}
+              </div>
+              {cert.expires_at && (
+                <div className="text-[11px] text-muted-foreground font-mono">
+                  Expires {new Date(cert.expires_at).toLocaleString()} · 12-month re-attestation cycle
+                </div>
+              )}
+            </div>
+
+            {(expired || expiringSoon) && !revoked && (
+              <div className="rounded-md border border-amber-500/40 bg-amber-500/10 p-3 flex items-center justify-between gap-2">
+                <div className="text-xs">
+                  {expired ? "This attestation has expired." : `Expires in ${daysLeft} days.`}
+                  {" "}Click <strong>Re-issue</strong> above to renew with a fresh 12-month cycle.
+                </div>
+                <Button size="sm" variant="outline" onClick={issue} disabled={busy}>
+                  <Sparkles className="h-3.5 w-3.5 mr-1.5" /> Renew now
+                </Button>
+              </div>
+            )}
+
             <div className="space-y-1 text-[11px] font-mono text-muted-foreground break-all">
               {cert.pdf_sha256 && <div>pdf sha256: {cert.pdf_sha256}</div>}
               {cert.audit_entry_hash && <div>audit anchor: {cert.audit_entry_hash}</div>}

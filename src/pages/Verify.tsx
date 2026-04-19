@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { useParams, Link } from "react-router-dom";
-import { ShieldCheck, ShieldX, Loader2, ExternalLink, Download, Sparkles, CheckCircle2, XCircle, Anchor } from "lucide-react";
+import { ShieldCheck, ShieldX, Loader2, ExternalLink, Download, Sparkles, CheckCircle2, XCircle, Anchor, Clock, AlertTriangle } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { PublicShell } from "@/components/PublicShell";
 import { PageHeader } from "@/components/ui/page-header";
@@ -28,7 +28,26 @@ interface CertOut {
   pdf_sha256_live: string | null;
   pdf_hash_ok: boolean;
   anchor_ok: boolean;
+  risk_tier_declared: string | null;
+  risk_tier_derived: string | null;
+  risk_tier_disagreement: boolean;
+  expires_at: string | null;
+  revoked_at: string | null;
+  revoked_reason: string | null;
+  status: "active" | "expired" | "revoked";
+  days_until_expiry: number | null;
 }
+
+const tierTone = (t: string | null) =>
+  t === "critical" ? "bg-destructive/15 text-destructive border-destructive/30"
+  : t === "high" ? "bg-amber-500/15 text-amber-700 dark:text-amber-300 border-amber-500/30"
+  : t === "medium" ? "bg-sky-500/15 text-sky-700 dark:text-sky-300 border-sky-500/30"
+  : "";
+
+const statusTone = (s: string) =>
+  s === "active" ? "bg-emerald-500/15 text-emerald-700 dark:text-emerald-300 border-emerald-500/30"
+  : s === "expired" ? "bg-amber-500/15 text-amber-700 dark:text-amber-300 border-amber-500/30"
+  : "bg-destructive/15 text-destructive border-destructive/30";
 
 const determinationTone = (d: string) =>
   d === "pass" ? "bg-emerald-500/15 text-emerald-700 dark:text-emerald-300 border-emerald-500/30"
