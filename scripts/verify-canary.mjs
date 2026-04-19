@@ -19,6 +19,8 @@ import { existsSync } from "node:fs";
 import { resolve } from "node:path";
 
 const MANIFEST_PATH = resolve(process.cwd(), ".canary-manifest.json");
+// Public mirror so the in-app /docs/canary page can fetch the same bytes.
+const PUBLIC_MIRROR_PATH = resolve(process.cwd(), "public/canary-manifest.json");
 const args = new Set(process.argv.slice(2));
 const asJson = args.has("--json");
 const update = args.has("--update");
@@ -45,8 +47,10 @@ async function regenerate(manifest) {
   }
   manifest.files = updated;
   manifest.generated_at = new Date().toISOString().replace(/\.\d{3}Z$/, "Z");
-  await writeFile(MANIFEST_PATH, JSON.stringify(manifest, null, 2) + "\n");
-  console.log(`✓ regenerated .canary-manifest.json (${updated.length} entries)`);
+  const serialized = JSON.stringify(manifest, null, 2) + "\n";
+  await writeFile(MANIFEST_PATH, serialized);
+  await writeFile(PUBLIC_MIRROR_PATH, serialized);
+  console.log(`✓ regenerated .canary-manifest.json + public mirror (${updated.length} entries)`);
 }
 
 async function verify(manifest) {
