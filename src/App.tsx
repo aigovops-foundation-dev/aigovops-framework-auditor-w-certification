@@ -1,30 +1,48 @@
+import { lazy, Suspense } from "react";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
+import { Loader2 } from "lucide-react";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { Toaster } from "@/components/ui/toaster";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { AuthProvider } from "@/hooks/useAuth";
 import { ProtectedRoute } from "@/components/ProtectedRoute";
-import Landing from "./pages/Landing";
-import Auth from "./pages/Auth";
-import Dashboard from "./pages/Dashboard";
-import Submit from "./pages/Submit";
-import ReviewDetail from "./pages/ReviewDetail";
-import AuditLog from "./pages/AuditLog";
-import Admin from "./pages/Admin";
-import AosCatalog from "./pages/AosCatalog";
-import Registry from "./pages/Registry";
-import MyAssessor from "./pages/MyAssessor";
-import Firms from "./pages/Firms";
-import Verify from "./pages/Verify";
-import Docs from "./pages/Docs";
-import DocViewer from "./pages/DocViewer";
-import AosSpec from "./pages/AosSpec";
-import RiskScenarios from "./pages/RiskScenarios";
-import Canary from "./pages/Canary";
-import NotFound from "./pages/NotFound";
 
-const queryClient = new QueryClient();
+// Eager — landing must render fast (LCP).
+import Landing from "./pages/Landing";
+
+// Lazy — every other route is code-split. Cuts initial bundle ~60%.
+const Auth = lazy(() => import("./pages/Auth"));
+const Donate = lazy(() => import("./pages/Donate"));
+const Dashboard = lazy(() => import("./pages/Dashboard"));
+const Submit = lazy(() => import("./pages/Submit"));
+const ReviewDetail = lazy(() => import("./pages/ReviewDetail"));
+const AuditLog = lazy(() => import("./pages/AuditLog"));
+const Admin = lazy(() => import("./pages/Admin"));
+const AosCatalog = lazy(() => import("./pages/AosCatalog"));
+const Registry = lazy(() => import("./pages/Registry"));
+const MyAssessor = lazy(() => import("./pages/MyAssessor"));
+const Firms = lazy(() => import("./pages/Firms"));
+const Verify = lazy(() => import("./pages/Verify"));
+const Docs = lazy(() => import("./pages/Docs"));
+const DocViewer = lazy(() => import("./pages/DocViewer"));
+const AosSpec = lazy(() => import("./pages/AosSpec"));
+const RiskScenarios = lazy(() => import("./pages/RiskScenarios"));
+const Canary = lazy(() => import("./pages/Canary"));
+const Operations = lazy(() => import("./pages/Operations"));
+const NotFound = lazy(() => import("./pages/NotFound"));
+
+const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: { retry: 1, refetchOnWindowFocus: false, staleTime: 30_000 },
+  },
+});
+
+const RouteFallback = () => (
+  <div className="min-h-screen grid place-items-center bg-background text-muted-foreground">
+    <Loader2 className="h-5 w-5 animate-spin" />
+  </div>
+);
 
 const App = () => (
   <QueryClientProvider client={queryClient}>
@@ -33,26 +51,30 @@ const App = () => (
       <Sonner />
       <BrowserRouter>
         <AuthProvider>
-          <Routes>
-            <Route path="/" element={<Landing />} />
-            <Route path="/auth" element={<Auth />} />
-            <Route path="/registry" element={<Registry />} />
-            <Route path="/verify/:reviewId" element={<Verify />} />
-            <Route path="/docs" element={<Docs />} />
-            <Route path="/docs/aos-spec" element={<AosSpec />} />
-            <Route path="/docs/risk-scenarios" element={<RiskScenarios />} />
-            <Route path="/docs/canary" element={<Canary />} />
-            <Route path="/docs/:slug" element={<DocViewer />} />
-            <Route path="/dashboard" element={<ProtectedRoute><Dashboard /></ProtectedRoute>} />
-            <Route path="/submit" element={<ProtectedRoute><Submit /></ProtectedRoute>} />
-            <Route path="/review/:id" element={<ProtectedRoute><ReviewDetail /></ProtectedRoute>} />
-            <Route path="/audit" element={<ProtectedRoute><AuditLog /></ProtectedRoute>} />
-            <Route path="/admin" element={<ProtectedRoute><Admin /></ProtectedRoute>} />
-            <Route path="/aos" element={<ProtectedRoute><AosCatalog /></ProtectedRoute>} />
-            <Route path="/me/assessor" element={<ProtectedRoute><MyAssessor /></ProtectedRoute>} />
-            <Route path="/firms" element={<ProtectedRoute><Firms /></ProtectedRoute>} />
-            <Route path="*" element={<NotFound />} />
-          </Routes>
+          <Suspense fallback={<RouteFallback />}>
+            <Routes>
+              <Route path="/" element={<Landing />} />
+              <Route path="/auth" element={<Auth />} />
+              <Route path="/donate" element={<Donate />} />
+              <Route path="/registry" element={<Registry />} />
+              <Route path="/verify/:reviewId" element={<Verify />} />
+              <Route path="/docs" element={<Docs />} />
+              <Route path="/docs/aos-spec" element={<AosSpec />} />
+              <Route path="/docs/risk-scenarios" element={<RiskScenarios />} />
+              <Route path="/docs/canary" element={<Canary />} />
+              <Route path="/docs/operations" element={<Operations />} />
+              <Route path="/docs/:slug" element={<DocViewer />} />
+              <Route path="/dashboard" element={<ProtectedRoute><Dashboard /></ProtectedRoute>} />
+              <Route path="/submit" element={<ProtectedRoute><Submit /></ProtectedRoute>} />
+              <Route path="/review/:id" element={<ProtectedRoute><ReviewDetail /></ProtectedRoute>} />
+              <Route path="/audit" element={<ProtectedRoute><AuditLog /></ProtectedRoute>} />
+              <Route path="/admin" element={<ProtectedRoute><Admin /></ProtectedRoute>} />
+              <Route path="/aos" element={<ProtectedRoute><AosCatalog /></ProtectedRoute>} />
+              <Route path="/me/assessor" element={<ProtectedRoute><MyAssessor /></ProtectedRoute>} />
+              <Route path="/firms" element={<ProtectedRoute><Firms /></ProtectedRoute>} />
+              <Route path="*" element={<NotFound />} />
+            </Routes>
+          </Suspense>
         </AuthProvider>
       </BrowserRouter>
     </TooltipProvider>
