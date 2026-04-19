@@ -23,12 +23,19 @@ export interface DemoBeat {
   code?: string;
   severity?: "info" | "low" | "medium" | "high" | "critical";
   controlId?: string;
+  /** Customer-journey step number (1-5). Renders as a big numbered chip on screen. */
+  step?: 1 | 2 | 3 | 4 | 5;
+  /** Big plain-English instruction telling the customer what THEY do at this step. */
+  youDo?: string;
+  /** Short label for the step (e.g. "Pick your problem"). */
+  stepLabel?: string;
 }
 
 export interface DemoScenario {
   id:
     | "enterprise_oss"
     | "healthcare_codegen"
+    | "healthcare_insurance"
     | "generative_ip"
     | "hr_behavior"
     | "general";
