@@ -40,7 +40,7 @@ export const PersonaCard = ({ persona }: { persona: PersonaMeta }) => {
     ["--glow-key" as string]: glow.key,
     ["--glow-rim" as string]: glow.rim,
     ["--glow-ring" as string]: glow.ring,
-  } as React.CSSProperties;
+  } as CSSProperties;
 
   return (
     <article
