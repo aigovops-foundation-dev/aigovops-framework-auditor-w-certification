@@ -98,7 +98,7 @@ const Landing = () => {
 
           {/* Right: agent council collage */}
           <div className="lg:col-span-5 relative">
-            <div className="relative aspect-[4/5] rounded-3xl border border-border bg-glass shadow-elev overflow-hidden p-6">
+            <div className="relative lg:aspect-[4/5] rounded-3xl border border-border bg-glass shadow-elev overflow-hidden p-6">
               <div className="absolute inset-0 bg-gradient-to-br from-secondary/20 via-transparent to-primary/20 pointer-events-none" />
               <div className="relative h-full flex flex-col">
                 <div className="text-[10px] font-mono uppercase tracking-wider text-muted-foreground mb-4 flex items-center gap-2">
@@ -120,8 +120,8 @@ const Landing = () => {
                   ))}
                 </div>
 
-                {/* Specialists grid */}
-                <div className="grid grid-cols-4 gap-3 flex-1 content-start">
+                {/* Specialists grid — push to bottom of the card so portraits aren't stranded mid-air */}
+                <div className="grid grid-cols-4 gap-y-3 gap-x-2 flex-1 content-end">
                   {["turing", "kerckhoffs", "nightingale", "lovelace", "hopper", "pacioli", "arendt", "hamilton"].map((slug) => (
                     <Link key={slug} to="/agents" className="group">
                       <PersonaAvatar slug={slug} size="md" className="mx-auto group-hover:scale-105 transition-transform" />
