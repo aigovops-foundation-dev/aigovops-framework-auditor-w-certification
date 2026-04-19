@@ -11,7 +11,9 @@ import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { Checkbox } from "@/components/ui/checkbox";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import { toast } from "sonner";
-import { Loader2, GitBranch, FileCode, UploadCloud, Sparkles, ChevronDown, ShieldAlert } from "lucide-react";
+import { Loader2, GitBranch, FileCode, UploadCloud, Sparkles, ChevronDown, ShieldAlert, Crown, ArrowRight } from "lucide-react";
+import { Link } from "react-router-dom";
+import { NamedCameo, PersonaAvatar } from "@/components/agents/PersonaPrimitives";
 
 import { PRESETS, type Preset, type Scenario } from "@/data/policy-presets";
 import { RISK_TIERS, type RiskTier } from "@/lib/control-objectives";
@@ -120,30 +122,64 @@ const Submit = () => {
 
   return (
     <AppShell>
-      <div className="p-8 max-w-3xl mx-auto">
-        <div className="flex items-start justify-between gap-4 mb-6">
-          <div>
-            <h1 className="text-2xl font-semibold tracking-tight">New review</h1>
-            <p className="text-sm text-muted-foreground">Submit a policy-as-code bundle for end-to-end agentic review.</p>
+      <div className="relative">
+        {/* Aurora wash */}
+        <div
+          aria-hidden
+          className="pointer-events-none absolute inset-0 -z-10 opacity-70"
+          style={{
+            background:
+              "radial-gradient(ellipse 70% 50% at 15% 0%, hsl(248 70% 22% / 0.55), transparent 65%), radial-gradient(ellipse 60% 50% at 100% 30%, hsl(160 70% 28% / 0.30), transparent 70%)",
+          }}
+        />
+        <div className="p-8 max-w-3xl mx-auto">
+          <div className="flex items-start justify-between gap-4 mb-6">
+            <div>
+              <h1 className="text-2xl font-semibold tracking-tight">New review</h1>
+              <p className="text-sm text-muted-foreground">Submit a policy-as-code bundle for end-to-end agentic review.</p>
+            </div>
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button type="button" variant="outline" size="sm">
+                  <Sparkles className="h-4 w-4 mr-1.5" /> Load sample <ChevronDown className="h-4 w-4 ml-1" />
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="end" className="w-72">
+                <DropdownMenuLabel>Scenario pack samples</DropdownMenuLabel>
+                <DropdownMenuSeparator />
+                {PRESETS.map((p) => (
+                  <DropdownMenuItem key={p.id} onClick={() => loadPreset(p)} className="flex flex-col items-start gap-0.5 py-2">
+                    <span className="text-sm font-medium">{p.label}</span>
+                    <span className="text-xs text-muted-foreground">{p.desc}</span>
+                  </DropdownMenuItem>
+                ))}
+              </DropdownMenuContent>
+            </DropdownMenu>
           </div>
-          <DropdownMenu>
-            <DropdownMenuTrigger asChild>
-              <Button type="button" variant="outline" size="sm">
-                <Sparkles className="h-4 w-4 mr-1.5" /> Load sample <ChevronDown className="h-4 w-4 ml-1" />
+
+          {/* Ken intake cameo banner — matches Quick Audit */}
+          <div className="mb-6 rounded-2xl border border-border bg-card/60 backdrop-blur-sm p-4 flex items-center gap-4 shadow-glow">
+            <PersonaAvatar slug="ken-newton" size="lg" />
+            <div className="flex-1 min-w-0">
+              <div className="text-[10px] font-mono uppercase tracking-[0.2em] text-warning flex items-center gap-1.5">
+                <Crown className="h-3 w-3" /> Ken Newton · Chief auditor on intake
+              </div>
+              <h2 className="text-lg font-semibold mt-0.5">
+                Hand me your bundle. I'll route it through the council.
+              </h2>
+              <p className="text-sm text-muted-foreground">
+                Pick scenarios, declare your tier honestly. The eight specialists will derive their own — insurers price the disagreement. Bob co-signs only if it's defensible.
+              </p>
+              <div className="mt-2 text-[11px] font-mono text-muted-foreground hidden md:block">
+                Co-signed by <NamedCameo slug="ken-newton" size="xs" /> and <NamedCameo slug="bob-smith" size="xs" />.
+              </div>
+            </div>
+            <Link to="/agents/chat" className="hidden md:inline-block">
+              <Button variant="ghost" size="sm">
+                Talk to Ken first <ArrowRight className="h-4 w-4 ml-1.5" />
               </Button>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent align="end" className="w-72">
-              <DropdownMenuLabel>Scenario pack samples</DropdownMenuLabel>
-              <DropdownMenuSeparator />
-              {PRESETS.map((p) => (
-                <DropdownMenuItem key={p.id} onClick={() => loadPreset(p)} className="flex flex-col items-start gap-0.5 py-2">
-                  <span className="text-sm font-medium">{p.label}</span>
-                  <span className="text-xs text-muted-foreground">{p.desc}</span>
-                </DropdownMenuItem>
-              ))}
-            </DropdownMenuContent>
-          </DropdownMenu>
-        </div>
+            </Link>
+          </div>
 
         <form onSubmit={submit} className="space-y-5">
           <div className="grid md:grid-cols-2 gap-4">
@@ -250,6 +286,7 @@ const Submit = () => {
             </Button>
           </div>
         </form>
+        </div>
       </div>
     </AppShell>
   );
