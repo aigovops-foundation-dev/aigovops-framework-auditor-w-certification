@@ -83,10 +83,16 @@ const Landing = () => {
 
         <div className="mt-6 flex flex-wrap items-center justify-center gap-2 text-[10px] font-mono uppercase tracking-wider text-muted-foreground">
           <span className="border border-border rounded px-2 py-0.5">Apache-2.0</span>
-          <span className="border border-border rounded px-2 py-0.5">AOS v0.1</span>
+          <span className="border border-border rounded px-2 py-0.5">{STANDARD.shortName} {STANDARD.version}</span>
+          <span className="border border-border rounded px-2 py-0.5">SLSA-style attestations</span>
           <span className="border border-border rounded px-2 py-0.5">Audit Chain Verified</span>
           <span className="border border-border rounded px-2 py-0.5">{FOUNDATION.name}</span>
         </div>
+
+        <p className="mt-5 text-[11px] font-mono text-muted-foreground max-w-2xl mx-auto">
+          One horizontal standard. Orthogonal risk tier. Vertical scenario packs.
+          Insurers can price one evidence format across an entire portfolio.
+        </p>
       </section>
 
       <DocsSection />
@@ -105,7 +111,7 @@ const Landing = () => {
 
       <section className="container max-w-6xl mx-auto pb-24">
         <div className="text-xs font-mono uppercase text-muted-foreground tracking-wider mb-3">
-          Hardened against
+          Scenario packs · contextual stress tests loaded over the horizontal {STANDARD.shortName} pipeline
         </div>
         <div className="grid md:grid-cols-4 gap-3">
           {scenarios.map((s) => (
@@ -116,6 +122,10 @@ const Landing = () => {
             </div>
           ))}
         </div>
+        <p className="mt-3 text-[11px] font-mono text-muted-foreground">
+          Scenario packs <em>extend coverage</em>. They never fork the standard — every review runs the
+          same {STANDARD.shortName} pipeline regardless of vertical.
+        </p>
       </section>
     </PublicShell>
   );
@@ -124,8 +134,8 @@ const Landing = () => {
 const agentCards = [
   { icon: ScanLine, title: "Policy Linter", body: "Parses Rego, YAML, JSON, Cedar. Flags syntax errors, unsafe defaults, missing metadata." },
   { icon: Brain, title: "Risk & Ethics Assessor", body: "Scores bias, transparency, oversight, hallucination risk, data minimization." },
-  { icon: Scale, title: "Compliance Mapper", body: "Maps clauses to EU AI Act, NIST AI RMF, ISO 42001, SOC 2, HIPAA." },
-  { icon: FileLock, title: "Scenario Risk Analyst", body: "Stress-tests against legal, insurable & HR-risk deployment scenarios." },
+  { icon: Scale, title: "Compliance Mapper", body: "Maps clauses to EU AI Act, NIST AI RMF, ISO 42001, SOC 2, HIPAA, NAIC AI Bulletin." },
+  { icon: FileLock, title: "Scenario Pack Analyst", body: "Loads vertical scenario packs (healthcare, IP, HR, OSS) over the horizontal pipeline." },
   { icon: Stamp, title: "Human-in-the-Loop", body: "Reviewer approves, rejects or requests changes — every action signed." },
   { icon: Activity, title: "Append-only Audit Log", body: "Every agent run + decision recorded for evidence-grade compliance." },
 ];
