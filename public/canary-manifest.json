@@ -1,10 +1,11 @@
 {
   "$schema": "https://aigovops.foundation/schema/canary-manifest-v1.json",
   "version": 1,
-  "generated_at": "2026-04-19T17:27:52Z",
+  "generated_at": "2026-04-19T17:35:07Z",
   "description": "Tamper-evident SHA-256 manifest for AiGovOps governance-critical files. CI verifies these hashes weekly; any drift opens a GitHub issue.",
   "covers": [
     "Top-level governance docs (LICENSE, NOTICE, README, SECURITY, GOVERNANCE, CONTRIBUTING, CODE_OF_CONDUCT, CHANGELOG, OPERATIONS)",
+    "docs/index.html (GitHub Pages launch landing)",
     "supabase/functions/** (edge functions: audit chain, attestation, agent pipeline)",
     "supabase/migrations/** (database schema + RLS policies)",
     "public/specs/** (machine-readable AOS spec)",
