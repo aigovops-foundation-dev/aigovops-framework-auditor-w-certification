@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { toast } from "sonner";
 import { ShieldCheck, UserCog, Crown, Loader2, KeyRound, Sparkles, Trash2, FileSignature } from "lucide-react";
+import { QagaPortraitUploader } from "@/components/admin/QagaPortraitUploader";
 
 interface Member {
   id: string;
@@ -219,6 +220,10 @@ const Admin = () => {
               </div>
             );
           })}
+        </div>
+
+        <div className="mt-10">
+          <QagaPortraitUploader />
         </div>
       </div>
     </AppShell>
