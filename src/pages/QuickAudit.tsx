@@ -405,7 +405,15 @@ const QuickAudit = () => {
         </div>
 
         {!!findings.length && (
-          <section className="mt-8">
+          <section ref={findingsRef} className="mt-8 scroll-mt-24">
+            {/* Sticky verdict pill — visible the moment results arrive */}
+            {verdict && (
+              <div className="sticky top-2 z-20 mb-3 flex justify-center">
+                <div className={`rounded-full border px-4 py-1.5 font-mono text-xs shadow-glow backdrop-blur ${verdict.tone}`}>
+                  {verdict.label} · {overall}/100 · {findings.length} finding{findings.length === 1 ? "" : "s"}
+                </div>
+              </div>
+            )}
             <h2 className="text-lg font-semibold mb-3 flex items-center gap-2">
               <Sparkles className="h-4 w-4 text-primary" />
               Findings <span className="text-sm text-muted-foreground font-mono">({findings.length})</span>
