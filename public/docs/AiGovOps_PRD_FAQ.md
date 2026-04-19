@@ -1,6 +1,6 @@
 # AiGovOps Review Framework — PRD-FAQ
 
-A working-backwards FAQ for stakeholders evaluating the AiGovOps Review Framework.
+A working-backwards FAQ for stakeholders evaluating the AiGovOps Review Framework, stewarded by the [AiGovOps Foundation](https://www.aigovopsfoundation.org/) (co-founded by **Bob Rapp** and **Ken Johnston**).
 
 ## What is the AiGovOps Review Framework?
 

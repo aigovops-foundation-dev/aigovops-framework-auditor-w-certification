@@ -8,9 +8,9 @@ import { FOUNDATION } from "@/lib/config";
 
 const Donate = () => {
   usePageMeta({
-    title: "Donate · AIGovOps Foundation",
+    title: "Donate · AiGovOps Foundation",
     description:
-      "Support the AIGovOps Foundation. Donations fund the AOS standard, the QAGA scholarship program, the Review Framework, and the public audit-chain infrastructure.",
+      "Support the AiGovOps Foundation. Donations fund the AOS standard, the QAGA scholarship program, the Review Framework, and the public audit-chain infrastructure.",
     canonical: "/donate",
     jsonLd: {
       "@context": "https://schema.org",
@@ -26,7 +26,7 @@ const Donate = () => {
     <PublicShell eyebrow="Support the work">
       <main className="container max-w-5xl mx-auto pt-12 pb-20">
         <PageHeader
-          eyebrow="AIGovOps Foundation · 501(c)(3) pending"
+          eyebrow="AiGovOps Foundation · 501(c)(3) pending"
           title="Help keep AI governance open."
           description={
             <>
@@ -107,7 +107,7 @@ const Donate = () => {
                 a private quarterly briefing with the steering committee.
               </p>
             </div>
-            <a href={`mailto:${FOUNDATION.donationsEmail}?subject=AIGovOps%20Foundation%20—%20Sponsorship`}>
+            <a href={`mailto:${FOUNDATION.donationsEmail}?subject=AiGovOps%20Foundation%20—%20Sponsorship`}>
               <Button variant="secondary">
                 <Mail className="h-4 w-4 mr-1" /> {FOUNDATION.donationsEmail}
               </Button>
