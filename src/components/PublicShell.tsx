@@ -34,7 +34,16 @@ export function PublicShell({ children, eyebrow = "Review Framework", rightSlot,
               <div className="text-[10px] text-muted-foreground font-mono uppercase tracking-wider">{eyebrow}</div>
             </div>
           </Link>
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-1 sm:gap-2">
+            <Link to="/developers" className="hidden md:inline-flex">
+              <Button variant="ghost" size="sm">Developers</Button>
+            </Link>
+            <Link to="/feed" className="hidden md:inline-flex">
+              <Button variant="ghost" size="sm">Feed</Button>
+            </Link>
+            <Link to="/docs" className="hidden md:inline-flex">
+              <Button variant="ghost" size="sm">Docs</Button>
+            </Link>
             <Link to="/donate" className="hidden sm:inline-flex">
               <Button variant="ghost" size="sm">
                 <Heart className="h-4 w-4 mr-1" /> Donate
