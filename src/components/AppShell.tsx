@@ -3,7 +3,7 @@ import { ReactNode } from "react";
 import { useAuth } from "@/hooks/useAuth";
 import { useRoles } from "@/hooks/useRoles";
 import { Button } from "@/components/ui/button";
-import { LayoutDashboard, FilePlus2, Shield, LogOut, Activity, UserCog, BookOpen, Crown, Building2, Heart } from "lucide-react";
+import { LayoutDashboard, FilePlus2, Shield, LogOut, Activity, UserCog, BookOpen, Crown, Building2, Heart, Users } from "lucide-react";
 
 export const AppShell = ({ children }: { children: ReactNode }) => {
   const { user, signOut } = useAuth();
@@ -14,6 +14,8 @@ export const AppShell = ({ children }: { children: ReactNode }) => {
   const links = [
     { to: "/dashboard", label: "Reviews", icon: LayoutDashboard },
     { to: "/submit", label: "New Review", icon: FilePlus2 },
+    { to: "/agents", label: "Agent Council", icon: Users },
+    { to: "/agents/dashboard", label: "Agent Activity", icon: Activity },
     { to: "/aos", label: "AOS Catalog", icon: BookOpen },
     { to: "/me/assessor", label: "My QAGA Path", icon: Crown },
     { to: "/audit", label: "Audit Log", icon: Activity },

@@ -30,6 +30,8 @@ const AosSpec = lazy(() => import("./pages/AosSpec"));
 const RiskScenarios = lazy(() => import("./pages/RiskScenarios"));
 const Canary = lazy(() => import("./pages/Canary"));
 const Operations = lazy(() => import("./pages/Operations"));
+const Agents = lazy(() => import("./pages/Agents"));
+const AgentsDashboard = lazy(() => import("./pages/AgentsDashboard"));
 const NotFound = lazy(() => import("./pages/NotFound"));
 
 const queryClient = new QueryClient({
@@ -72,6 +74,8 @@ const App = () => (
               <Route path="/aos" element={<ProtectedRoute><AosCatalog /></ProtectedRoute>} />
               <Route path="/me/assessor" element={<ProtectedRoute><MyAssessor /></ProtectedRoute>} />
               <Route path="/firms" element={<ProtectedRoute><Firms /></ProtectedRoute>} />
+              <Route path="/agents" element={<ProtectedRoute><Agents /></ProtectedRoute>} />
+              <Route path="/agents/dashboard" element={<ProtectedRoute><AgentsDashboard /></ProtectedRoute>} />
               <Route path="*" element={<NotFound />} />
             </Routes>
           </Suspense>
