@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { Link, useNavigate, useSearchParams } from "react-router-dom";
 import { AppShell } from "@/components/AppShell";
 import { PageHeader } from "@/components/ui/page-header";
@@ -119,6 +119,22 @@ const QuickAudit = () => {
   const [overall, setOverall] = useState<number | null>(null);
   const [derivedTier, setDerivedTier] = useState<"medium" | "high" | "critical" | null>(null);
   const [lastRunAt, setLastRunAt] = useState<Date | null>(null);
+  const findingsRef = useRef<HTMLElement | null>(null);
+
+  // Auto-scroll to findings as soon as they arrive
+  useEffect(() => {
+    if (!busy && findings.length > 0 && findingsRef.current) {
+      findingsRef.current.scrollIntoView({ behavior: "smooth", block: "start" });
+    }
+  }, [busy, findings.length]);
+
+  // Verdict (RED/AMBER/GREEN) derived from overall score
+  const verdict = useMemo(() => {
+    if (overall === null) return null;
+    if (overall < 50) return { label: "RED", tone: "bg-destructive/15 text-destructive border-destructive/40" };
+    if (overall < 75) return { label: "AMBER", tone: "bg-warning/15 text-warning border-warning/40" };
+    return { label: "GREEN", tone: "bg-primary/15 text-primary border-primary/40" };
+  }, [overall]);
 
   // Cooldown: 1 free run / 24h (bypass for admin + curator)
   useEffect(() => {
@@ -389,7 +405,15 @@ const QuickAudit = () => {
         </div>
 
         {!!findings.length && (
-          <section className="mt-8">
+          <section ref={findingsRef} className="mt-8 scroll-mt-24">
+            {/* Sticky verdict pill — visible the moment results arrive */}
+            {verdict && (
+              <div className="sticky top-2 z-20 mb-3 flex justify-center">
+                <div className={`rounded-full border px-4 py-1.5 font-mono text-xs shadow-glow backdrop-blur ${verdict.tone}`}>
+                  {verdict.label} · {overall}/100 · {findings.length} finding{findings.length === 1 ? "" : "s"}
+                </div>
+              </div>
+            )}
             <h2 className="text-lg font-semibold mb-3 flex items-center gap-2">
               <Sparkles className="h-4 w-4 text-primary" />
               Findings <span className="text-sm text-muted-foreground font-mono">({findings.length})</span>
