@@ -54,6 +54,24 @@ allow {
   input.actor.role == "engineer"
 }`;
 
+/** Starter snippets seeded from /demo CTAs. Key is the ?seed= URL param. */
+const SEEDS: Record<string, string> = {
+  prior_auth: `# prior_auth_model.yaml — health insurance prior-authorization AI
+model: claims-deny-v3
+training_data: 2019_2024_decisions.parquet   # ⚠ historical bias risk
+auto_deny_threshold: 0.62                     # ⚠ no human review
+appeal_path: null                             # ⚠ no recourse for patients
+explanation: "policy mismatch"                # ⚠ not specific
+audit_log: false                              # ⚠ no decision trail
+human_in_the_loop:
+  required_above_confidence: null             # ⚠ should be <= 0.5 per CA SB 1120
+disparate_impact_test:
+  cadence: never                              # ⚠ EEOC / state-DOI exposure
+  cohorts: []
+medical_director_signoff: false               # ⚠ "the model decided" is not defensible
+`,
+};
+
 const sevTone: Record<string, string> = {
   info: "bg-muted text-muted-foreground border-border",
   low: "bg-primary/10 text-primary border-primary/20",
@@ -83,11 +101,18 @@ const QuickAudit = () => {
   const { isAdmin, isCurator } = useRoles();
   const bypass = isAdmin || isCurator;
   const [params] = useSearchParams();
-  const scenarioParam = (params.get("scenario") as ScenarioTag | null) ?? "enterprise_oss";
-  const scenario: ScenarioTag = SCENARIO_GUIDE[scenarioParam] ? scenarioParam : "enterprise_oss";
+  const rawScenario = params.get("scenario");
+  // Accept friendly aliases too (e.g. "healthcare" → "healthcare_codegen")
+  const aliased: ScenarioTag | null =
+    rawScenario === "healthcare" ? "healthcare_codegen"
+    : rawScenario === "founder" ? "general"
+    : rawScenario === "auditor" ? "enterprise_oss"
+    : (rawScenario as ScenarioTag | null);
+  const scenario: ScenarioTag = aliased && SCENARIO_GUIDE[aliased] ? aliased : "enterprise_oss";
   const scenarioInfo = SCENARIO_GUIDE[scenario];
+  const seed = params.get("seed"); // pre-fill key from /demo CTA
 
-  const [code, setCode] = useState(SAMPLE);
+  const [code, setCode] = useState(() => SEEDS[seed ?? ""] ?? SAMPLE);
   const [busy, setBusy] = useState(false);
   const [reviewId, setReviewId] = useState<string | null>(null);
   const [findings, setFindings] = useState<Finding[]>([]);

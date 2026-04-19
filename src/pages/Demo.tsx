@@ -3,7 +3,7 @@ import { Link, useNavigate, useParams } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import {
-  Pause, Play, RotateCcw, ArrowRight, Crown, Stamp, ChevronLeft, ArrowLeft, ArrowRight as ArrowRightIcon, MousePointerClick,
+  Pause, Play, RotateCcw, ArrowRight, Crown, Stamp, ChevronLeft, ArrowLeft, ArrowRight as ArrowRightIcon, MousePointerClick, Sparkles, Zap,
 } from "lucide-react";
 import { DEMOS, demoBySlug, type DemoBeat } from "@/data/demo-scenarios";
 import { portraitFor, personaBySlug } from "@/data/agent-personas";
@@ -209,6 +209,38 @@ const Scene = ({ beat }: { beat: DemoBeat }) => {
           {beat.title}
         </h1>
         <p className="text-lg text-muted-foreground mt-4 max-w-3xl mx-auto">{beat.body}</p>
+      </div>
+    );
+  }
+  if (beat.kind === "cta") {
+    return (
+      <div className="text-center max-w-3xl mx-auto">
+        <div className="text-xs font-mono uppercase tracking-[0.3em] text-primary/80 mb-4 flex items-center justify-center gap-2">
+          <Sparkles className="h-3.5 w-3.5" /> Your turn
+        </div>
+        <h1 className="text-4xl md:text-6xl font-bold tracking-tight leading-[1.05] mb-5">
+          {beat.title}
+        </h1>
+        {beat.body && (
+          <p className="text-base md:text-lg text-muted-foreground mb-8 leading-relaxed">
+            {beat.body}
+          </p>
+        )}
+        <Link to={beat.ctaTo ?? "/auth?next=/quick-audit"}>
+          <Button
+            size="lg"
+            className="h-14 px-7 text-base bg-emerald-grad text-primary-foreground hover:opacity-95 shadow-glow group"
+          >
+            <Zap className="h-5 w-5 mr-2.5" />
+            {beat.ctaLabel ?? "Run a real audit"}
+            <ArrowRight className="h-4 w-4 ml-2.5 transition-transform group-hover:translate-x-0.5" />
+          </Button>
+        </Link>
+        <div className="mt-4 flex flex-wrap items-center justify-center gap-x-4 gap-y-1.5 text-[11px] font-mono text-muted-foreground">
+          <span>· no credit card</span>
+          <span>· 1 free run / 24h</span>
+          <span>· ~20s to findings</span>
+        </div>
       </div>
     );
   }

@@ -8,7 +8,8 @@ export type DemoBeatKind =
   | "agent"     // one persona speaks
   | "handoff"   // arrow + reason
   | "finding"   // result card
-  | "stamp";    // final pass/fail stamp
+  | "stamp"     // final pass/fail stamp
+  | "cta";      // closing call-to-action with link
 
 export interface DemoBeat {
   kind: DemoBeatKind;
@@ -29,6 +30,10 @@ export interface DemoBeat {
   youDo?: string;
   /** Short label for the step (e.g. "Pick your problem"). */
   stepLabel?: string;
+  /** For `cta` beat: the route to navigate to on click. */
+  ctaTo?: string;
+  /** For `cta` beat: the button label. */
+  ctaLabel?: string;
 }
 
 export interface DemoScenario {
@@ -175,10 +180,12 @@ audit_log: false                               # ⚠ no trail`,
         severity: "info",
       },
       {
-        kind: "intro",
-        dwell: 5500,
-        title: "90 seconds. Five steps. One certificate anyone can verify.",
-        body: "Maya now has a defensible record before a single denial reaches a patient. That is what shipping responsibly looks like.",
+        kind: "cta",
+        dwell: 9000,
+        title: "Now run this audit on your own AI.",
+        body: "We'll pre-fill the prior_auth_model.yaml above and route you straight into the Healthcare AI scenario pack. One free run — no credit card.",
+        ctaTo: "/auth?next=" + encodeURIComponent("/quick-audit?scenario=healthcare&seed=prior_auth"),
+        ctaLabel: "Run this audit on your own AI",
       },
     ],
   },
