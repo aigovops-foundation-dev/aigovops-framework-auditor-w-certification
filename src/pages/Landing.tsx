@@ -103,7 +103,7 @@ const Landing = () => {
                     <Zap className="h-3.5 w-3.5 mr-1.5" /> Skip intake — run audit
                   </Button>
                 </Link>
-                <Link to="/demo/enterprise_oss">
+                <Link to="/demo/healthcare_insurance">
                   <Button size="sm" variant="ghost" className="text-muted-foreground hover:text-foreground">
                     <Play className="h-3.5 w-3.5 mr-1.5" /> Watch 90-sec demo
                   </Button>
