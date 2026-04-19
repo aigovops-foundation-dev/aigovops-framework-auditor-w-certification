@@ -21,6 +21,7 @@ import {
 import { DocsSection } from "@/components/DocsSection";
 import { PublicShell } from "@/components/PublicShell";
 import { PersonaAvatar, PersonaStrip, NamedCameo } from "@/components/agents/PersonaPrimitives";
+import { personaBySlug } from "@/data/agent-personas";
 import { usePageMeta } from "@/hooks/usePageMeta";
 import { FOUNDATION, PROJECT, STANDARD } from "@/lib/config";
 
