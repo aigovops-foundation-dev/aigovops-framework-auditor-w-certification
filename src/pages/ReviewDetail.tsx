@@ -224,7 +224,11 @@ const ReviewDetail = () => {
                   <button
                     type="button"
                     onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
-                    className="shrink-0 inline-flex items-center gap-1.5 rounded-full border border-border bg-card-grad px-3 py-1.5 text-xs font-mono uppercase tracking-wider text-muted-foreground hover:border-primary/50 hover:text-foreground transition"
+                    className={`shrink-0 inline-flex items-center gap-1.5 rounded-full border px-3 py-1.5 text-xs font-mono uppercase tracking-wider transition ${
+                      activeSlug === null
+                        ? "border-primary/60 bg-primary/10 text-primary shadow-glow"
+                        : "border-border bg-card-grad text-muted-foreground hover:border-primary/50 hover:text-foreground"
+                    }`}
                   >
                     All <span className="tabular-nums">{findings.length}</span>
                   </button>
@@ -232,6 +236,7 @@ const ReviewDetail = () => {
                     const slug = agentNameToSlug(agent);
                     const persona = personaBySlug(slug);
                     const anchor = `agent-${slug}`;
+                    const isActive = activeSlug === slug;
                     return (
                       <button
                         key={agent}
@@ -243,12 +248,17 @@ const ReviewDetail = () => {
                             window.scrollTo({ top: y, behavior: "smooth" });
                           }
                         }}
-                        className="shrink-0 inline-flex items-center gap-2 rounded-full border border-border bg-card-grad pl-1 pr-3 py-1 text-xs hover:border-primary/50 hover:bg-primary/5 transition group"
+                        aria-current={isActive ? "true" : undefined}
+                        className={`shrink-0 inline-flex items-center gap-2 rounded-full border pl-1 pr-3 py-1 text-xs transition group ${
+                          isActive
+                            ? "border-primary/70 bg-primary/10 text-foreground shadow-glow"
+                            : "border-border bg-card-grad hover:border-primary/50 hover:bg-primary/5"
+                        }`}
                         title={persona ? `${persona.display_name} · ${persona.role_title}` : agent}
                       >
-                        <PersonaAvatar slug={slug} size="xs" />
-                        <span className="font-medium text-foreground/90 group-hover:text-foreground">{agent}</span>
-                        <span className="font-mono tabular-nums text-muted-foreground">{fs.length}</span>
+                        <PersonaAvatar slug={slug} size="xs" ring={isActive} />
+                        <span className={`font-medium ${isActive ? "text-foreground" : "text-foreground/90 group-hover:text-foreground"}`}>{agent}</span>
+                        <span className={`font-mono tabular-nums ${isActive ? "text-primary" : "text-muted-foreground"}`}>{fs.length}</span>
                       </button>
                     );
                   })}
