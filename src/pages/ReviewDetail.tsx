@@ -72,6 +72,36 @@ const ReviewDetail = () => {
     }
   }, [review, load]);
 
+  // Highlight active agent pill based on which group is in view
+  useEffect(() => {
+    if (findings.length === 0) return;
+    const slugs = Array.from(new Set(findings.map((f) => agentNameToSlug(f.agent_name))));
+    const elements = slugs
+      .map((slug) => document.getElementById(`agent-${slug}`))
+      .filter((el): el is HTMLElement => el !== null);
+    if (elements.length === 0) return;
+
+    const visibility = new Map<string, number>();
+    const observer = new IntersectionObserver(
+      (entries) => {
+        for (const entry of entries) {
+          const slug = entry.target.id.replace(/^agent-/, "");
+          visibility.set(slug, entry.intersectionRatio);
+        }
+        // Pick the slug with the highest intersection ratio (>0)
+        let bestSlug: string | null = null;
+        let bestRatio = 0;
+        for (const [slug, ratio] of visibility) {
+          if (ratio > bestRatio) { bestRatio = ratio; bestSlug = slug; }
+        }
+        setActiveSlug(bestRatio > 0 ? bestSlug : null);
+      },
+      { rootMargin: "-96px 0px -55% 0px", threshold: [0, 0.25, 0.5, 0.75, 1] }
+    );
+    elements.forEach((el) => observer.observe(el));
+    return () => observer.disconnect();
+  }, [findings]);
+
   const rerun = async () => {
     setBusy(true);
     await supabase.from("reviews").update({ status: "analyzing", overall_score: null, decided_at: null, decided_by: null, decision_notes: null }).eq("id", id);
