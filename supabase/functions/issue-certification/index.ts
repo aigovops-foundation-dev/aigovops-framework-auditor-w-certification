@@ -222,10 +222,13 @@ Deno.serve(async (req) => {
       aos_version: aosVersion,
       determination: verdict,
       conformance: conf,
+      risk_tier_declared: riskTierDeclared,
+      risk_tier_derived: riskTierDerived,
+      expires_at: expiresAt.toISOString(),
       chain_manifest: chainManifest.map((r: any) => ({
         event: r.event, prev_hash: r.prev_hash, entry_hash: r.entry_hash, signature: r.signature, created_at: r.created_at,
       })),
-      issued_at: new Date().toISOString(),
+      issued_at: issuedAt.toISOString(),
     });
     const contentHash = await sha256Hex(enc.encode(canonicalCertBody));
 
@@ -317,6 +320,9 @@ Deno.serve(async (req) => {
         signature_kind: "hmac-sha256-demo",
         trigger,
         manifest_entries: chainManifest.length,
+        risk_tier_declared: riskTierDeclared,
+        risk_tier_derived: riskTierDerived,
+        expires_at: expiresAt.toISOString(),
       },
     });
 
@@ -338,6 +344,9 @@ Deno.serve(async (req) => {
       chain_manifest: chainManifest,
       issued_by: actorId,
       trigger_kind: trigger === "auto" ? "auto" : "manual",
+      risk_tier_declared: riskTierDeclared as any,
+      risk_tier_derived: riskTierDerived as any,
+      expires_at: expiresAt.toISOString(),
     }).select().single();
     if (certErr) throw certErr;
 
