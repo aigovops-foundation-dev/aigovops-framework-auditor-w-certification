@@ -46,7 +46,17 @@ const ReviewDetail = () => {
   const [chain, setChain] = useState<{ ok: boolean; count: number; results?: Array<{ ok: boolean; reason?: string }> } | null>(null);
   const [verifying, setVerifying] = useState(false);
   const [activeSlug, setActiveSlug] = useState<string | null>(null);
-  const [hiddenSeverities, setHiddenSeverities] = useState<Set<string>>(new Set());
+  // Initialize from URL hash so deep-links restore filter state
+  const initialHash = (() => {
+    const h = typeof window !== "undefined" ? window.location.hash.replace(/^#/, "") : "";
+    const params = new URLSearchParams(h);
+    return {
+      hide: new Set((params.get("hide") ?? "").split(",").filter(Boolean)),
+      agent: params.get("agent") ?? null,
+    };
+  })();
+  const [hiddenSeverities, setHiddenSeverities] = useState<Set<string>>(initialHash.hide);
+  const [pendingAgentScroll, setPendingAgentScroll] = useState<string | null>(initialHash.agent);
 
   const load = useCallback(async () => {
     if (!id) return;
@@ -102,6 +112,31 @@ const ReviewDetail = () => {
     elements.forEach((el) => observer.observe(el));
     return () => observer.disconnect();
   }, [findings]);
+
+  // Scroll to ?agent= from hash once that group renders
+  useEffect(() => {
+    if (!pendingAgentScroll || findings.length === 0) return;
+    const el = document.getElementById(`agent-${pendingAgentScroll}`);
+    if (el) {
+      const y = el.getBoundingClientRect().top + window.scrollY - 80;
+      window.scrollTo({ top: y, behavior: "smooth" });
+      setPendingAgentScroll(null);
+    }
+  }, [findings, pendingAgentScroll]);
+
+  // Persist filter + active agent in URL hash for shareable deep links
+  useEffect(() => {
+    const params = new URLSearchParams();
+    if (hiddenSeverities.size > 0) {
+      params.set("hide", Array.from(hiddenSeverities).join(","));
+    }
+    if (activeSlug) params.set("agent", activeSlug);
+    const newHash = params.toString();
+    const target = newHash ? `#${newHash}` : "";
+    if (window.location.hash !== target) {
+      window.history.replaceState(null, "", `${window.location.pathname}${window.location.search}${target}`);
+    }
+  }, [hiddenSeverities, activeSlug]);
 
   const rerun = async () => {
     setBusy(true);
