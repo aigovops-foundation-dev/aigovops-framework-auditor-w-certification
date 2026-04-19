@@ -67,7 +67,31 @@ export function PublicShell({ children, eyebrow = "Review Framework", rightSlot,
         <div className="flex-1">{children}</div>
 
         <footer className="border-t border-border/60 py-6 mt-12 bg-background/40 backdrop-blur">
-          <div className="container max-w-6xl mx-auto flex flex-col gap-3 text-xs text-muted-foreground font-mono">
+          <div className="container max-w-6xl mx-auto flex flex-col gap-4 text-xs text-muted-foreground font-mono">
+            {/* Donation row — present on every public page so visitors can give from any screen. */}
+            <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 rounded-lg border border-primary/20 bg-primary/[0.04] px-4 py-3">
+              <div className="flex items-center gap-2 text-foreground/90">
+                <Heart className="h-3.5 w-3.5 text-primary" />
+                <span>Keep AI governance open — donate to the {FOUNDATION.name}.</span>
+              </div>
+              <div className="flex items-center gap-2 flex-wrap">
+                <a href={FOUNDATION.stripeDonate.twentyFive} target="_blank" rel="noreferrer">
+                  <Button size="sm" variant="outline" className="h-7 text-xs">$25</Button>
+                </a>
+                <a href={FOUNDATION.stripeDonate.fifty} target="_blank" rel="noreferrer">
+                  <Button size="sm" variant="outline" className="h-7 text-xs">$50</Button>
+                </a>
+                <a href={FOUNDATION.stripeDonate.pickYourAmount} target="_blank" rel="noreferrer">
+                  <Button size="sm" className="h-7 text-xs bg-emerald-grad text-primary-foreground hover:opacity-90">
+                    Custom
+                  </Button>
+                </a>
+                <Link to="/donate" className="text-[10px] hover:text-foreground transition-colors ml-1">
+                  more options
+                </Link>
+              </div>
+            </div>
+
             <div className="flex flex-col md:flex-row items-center justify-between gap-3">
               <div>
                 Stewarded by the{" "}
