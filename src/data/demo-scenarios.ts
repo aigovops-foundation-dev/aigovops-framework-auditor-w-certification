@@ -8,7 +8,8 @@ export type DemoBeatKind =
   | "agent"     // one persona speaks
   | "handoff"   // arrow + reason
   | "finding"   // result card
-  | "stamp";    // final pass/fail stamp
+  | "stamp"     // final pass/fail stamp
+  | "cta";      // closing call-to-action with link
 
 export interface DemoBeat {
   kind: DemoBeatKind;
