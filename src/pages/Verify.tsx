@@ -7,6 +7,7 @@ import { PageHeader } from "@/components/ui/page-header";
 import { Button } from "@/components/ui/button";
 import { usePageMeta } from "@/hooks/usePageMeta";
 import { EDGE_BASE } from "@/lib/config";
+import { PersonaAvatar } from "@/components/agents/PersonaPrimitives";
 
 interface CertOut {
   id: string;
