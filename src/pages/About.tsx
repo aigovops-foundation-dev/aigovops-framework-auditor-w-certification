@@ -17,7 +17,7 @@ const About = () => {
       "@type": "NGO",
       name: FOUNDATION.name,
       url: FOUNDATION.url,
-      sameAs: [FOUNDATION.githubOrgUrl, FOUNDATION.githubSponsorsUrl],
+      sameAs: [FOUNDATION.githubOrgUrl],
       email: FOUNDATION.contactEmail,
       founder: FOUNDATION.cofounders.map((c) => ({
         "@type": "Person",
