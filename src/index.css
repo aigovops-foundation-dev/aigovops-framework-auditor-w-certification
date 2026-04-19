@@ -1,67 +1,84 @@
-@import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&family=Inter:wght@400;500;600;700;800&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&family=Inter:wght@400;500;600;700;800;900&family=Instrument+Serif&display=swap');
 
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
-/* AIGovOps "Ops Console" design system. HSL only. */
+/* AIGovOps "Aurora" design system.
+ * Indigo-deep base, emerald primary (verified/compliant), violet secondary (agent),
+ * gold accent (QAGA / chief), warm-amber warning, signal red destructive.
+ * HSL only.
+ */
 
 @layer base {
   :root {
-    /* Dark ops console as default (no light theme by design) */
-    --background: 222 28% 6%;
-    --foreground: 210 20% 92%;
+    /* Aurora deep-indigo base */
+    --background: 232 44% 6%;
+    --foreground: 220 30% 96%;
 
-    --card: 222 24% 9%;
-    --card-foreground: 210 20% 92%;
+    --card: 232 38% 9%;
+    --card-foreground: 220 30% 96%;
 
-    --popover: 222 28% 8%;
-    --popover-foreground: 210 20% 92%;
+    --popover: 232 44% 8%;
+    --popover-foreground: 220 30% 96%;
 
-    --primary: 158 76% 45%;          /* emerald = compliant / pass */
-    --primary-foreground: 222 28% 6%;
-    --primary-glow: 158 90% 55%;
+    --primary: 158 78% 48%;            /* emerald = compliant / verified */
+    --primary-foreground: 232 44% 6%;
+    --primary-glow: 158 90% 60%;
 
-    --secondary: 222 22% 14%;
-    --secondary-foreground: 210 20% 92%;
+    --secondary: 252 70% 65%;          /* violet = agent / reasoning */
+    --secondary-foreground: 232 44% 6%;
+    --secondary-glow: 268 80% 70%;
 
-    --muted: 222 18% 13%;
-    --muted-foreground: 215 14% 60%;
+    --muted: 232 24% 14%;
+    --muted-foreground: 220 14% 70%;
 
-    --accent: 199 89% 56%;           /* cyan = info / agent */
-    --accent-foreground: 222 28% 6%;
+    --accent: 38 95% 60%;              /* gold = QAGA / chief / human */
+    --accent-foreground: 232 44% 6%;
+    --accent-glow: 42 100% 70%;
 
-    --warning: 38 95% 58%;           /* amber = needs review */
-    --warning-foreground: 222 28% 6%;
+    --warning: 28 95% 60%;             /* amber = needs review */
+    --warning-foreground: 232 44% 6%;
 
-    --destructive: 0 78% 58%;        /* red = blocking */
+    --destructive: 350 80% 62%;        /* signal red = blocking */
     --destructive-foreground: 0 0% 100%;
 
-    --border: 222 20% 16%;
-    --input: 222 20% 14%;
-    --ring: 158 76% 45%;
+    --border: 232 30% 18%;
+    --input: 232 30% 14%;
+    --ring: 158 78% 48%;
 
-    --radius: 0.5rem;
+    --radius: 0.75rem;
 
-    --sidebar-background: 222 28% 7%;
-    --sidebar-foreground: 210 16% 80%;
-    --sidebar-primary: 158 76% 45%;
-    --sidebar-primary-foreground: 222 28% 6%;
-    --sidebar-accent: 222 22% 12%;
-    --sidebar-accent-foreground: 210 20% 92%;
-    --sidebar-border: 222 20% 14%;
-    --sidebar-ring: 158 76% 45%;
+    --sidebar-background: 232 44% 7%;
+    --sidebar-foreground: 220 22% 84%;
+    --sidebar-primary: 158 78% 48%;
+    --sidebar-primary-foreground: 232 44% 6%;
+    --sidebar-accent: 252 50% 16%;
+    --sidebar-accent-foreground: 220 30% 96%;
+    --sidebar-border: 232 30% 14%;
+    --sidebar-ring: 158 78% 48%;
 
-    /* Tokens */
-    --gradient-hero: radial-gradient(ellipse at top, hsl(158 76% 45% / 0.15), transparent 60%),
-                     radial-gradient(ellipse at bottom right, hsl(199 89% 56% / 0.08), transparent 50%),
-                     hsl(222 28% 6%);
-    --gradient-card: linear-gradient(180deg, hsl(222 24% 10%), hsl(222 26% 8%));
-    --gradient-emerald: linear-gradient(135deg, hsl(158 76% 45%), hsl(178 70% 50%));
-    --shadow-glow: 0 0 0 1px hsl(158 76% 45% / 0.25), 0 8px 40px -10px hsl(158 76% 45% / 0.4);
-    --shadow-elev: 0 1px 0 hsl(0 0% 100% / 0.04) inset, 0 10px 30px -12px hsl(0 0% 0% / 0.6);
-    --grid-pattern: linear-gradient(hsl(222 20% 14% / 0.6) 1px, transparent 1px),
-                    linear-gradient(90deg, hsl(222 20% 14% / 0.6) 1px, transparent 1px);
+    /* Aurora gradients */
+    --gradient-aurora: radial-gradient(ellipse 90% 60% at 12% 0%, hsl(252 80% 55% / 0.35), transparent 55%),
+                       radial-gradient(ellipse 70% 50% at 100% 30%, hsl(158 78% 48% / 0.28), transparent 60%),
+                       radial-gradient(ellipse 80% 60% at 50% 100%, hsl(38 95% 60% / 0.18), transparent 60%),
+                       linear-gradient(180deg, hsl(232 44% 5%), hsl(232 48% 8%));
+    --gradient-hero: var(--gradient-aurora);
+    --gradient-card: linear-gradient(180deg, hsl(232 36% 11% / 0.9), hsl(232 40% 8% / 0.9));
+    --gradient-glass: linear-gradient(180deg, hsl(220 30% 96% / 0.06), hsl(220 30% 96% / 0.02));
+    --gradient-emerald: linear-gradient(135deg, hsl(158 78% 48%), hsl(178 70% 52%));
+    --gradient-violet:  linear-gradient(135deg, hsl(252 70% 65%), hsl(295 70% 65%));
+    --gradient-gold:    linear-gradient(135deg, hsl(38 95% 60%), hsl(48 95% 70%));
+    --gradient-aurora-text: linear-gradient(110deg, hsl(252 90% 75%) 0%, hsl(178 80% 65%) 50%, hsl(158 90% 60%) 100%);
+
+    --shadow-glow:     0 0 0 1px hsl(158 78% 48% / 0.3), 0 12px 50px -12px hsl(158 78% 48% / 0.45);
+    --shadow-violet:   0 0 0 1px hsl(252 70% 65% / 0.3), 0 12px 50px -12px hsl(252 70% 65% / 0.45);
+    --shadow-gold:     0 0 0 1px hsl(38 95% 60% / 0.35), 0 12px 50px -12px hsl(38 95% 60% / 0.5);
+    --shadow-elev:     0 1px 0 hsl(0 0% 100% / 0.05) inset, 0 18px 50px -18px hsl(0 0% 0% / 0.7);
+    --shadow-glass:    0 1px 0 hsl(0 0% 100% / 0.06) inset, 0 8px 32px -8px hsl(232 44% 2% / 0.5);
+
+    --grid-pattern: linear-gradient(hsl(232 30% 18% / 0.5) 1px, transparent 1px),
+                    linear-gradient(90deg, hsl(232 30% 18% / 0.5) 1px, transparent 1px);
   }
 }
 
@@ -71,25 +88,60 @@
   body {
     @apply bg-background text-foreground antialiased;
     font-feature-settings: "ss01", "cv11";
+    background: var(--gradient-aurora);
+    background-attachment: fixed;
   }
   code, pre, .font-mono { font-family: 'JetBrains Mono', ui-monospace, monospace; }
+  .font-display { font-family: 'Instrument Serif', 'Inter', serif; font-weight: 400; letter-spacing: -0.02em; }
 }
 
 @layer utilities {
+  /* Backgrounds */
   .bg-grid {
     background-image: var(--grid-pattern);
-    background-size: 32px 32px;
+    background-size: 40px 40px;
   }
-  .bg-hero { background: var(--gradient-hero); }
+  .bg-aurora { background: var(--gradient-aurora); }
+  .bg-hero   { background: var(--gradient-hero); }
   .bg-card-grad { background: var(--gradient-card); }
-  .text-emerald-grad {
-    background: var(--gradient-emerald);
+  .bg-glass {
+    background: var(--gradient-glass);
+    backdrop-filter: blur(14px) saturate(140%);
+    -webkit-backdrop-filter: blur(14px) saturate(140%);
+  }
+  .bg-emerald-grad { background: var(--gradient-emerald); }
+  .bg-violet-grad  { background: var(--gradient-violet); }
+  .bg-gold-grad    { background: var(--gradient-gold); }
+
+  /* Text gradients */
+  .text-emerald-grad,
+  .text-aurora {
+    background: var(--gradient-aurora-text);
     -webkit-background-clip: text;
     background-clip: text;
     color: transparent;
   }
-  .shadow-glow { box-shadow: var(--shadow-glow); }
-  .shadow-elev { box-shadow: var(--shadow-elev); }
+  .text-gold-grad {
+    background: var(--gradient-gold);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+  }
+  .text-violet-grad {
+    background: var(--gradient-violet);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+  }
+
+  /* Shadows */
+  .shadow-glow   { box-shadow: var(--shadow-glow); }
+  .shadow-violet { box-shadow: var(--shadow-violet); }
+  .shadow-gold   { box-shadow: var(--shadow-gold); }
+  .shadow-elev   { box-shadow: var(--shadow-elev); }
+  .shadow-glass  { box-shadow: var(--shadow-glass); }
+
+  /* Pulse dot for live indicators */
   .pulse-dot::before {
     content: '';
     display: inline-block;
@@ -100,8 +152,40 @@
     animation: pulse-ring 1.8s cubic-bezier(0.4, 0, 0.6, 1) infinite;
   }
   @keyframes pulse-ring {
-    0% { box-shadow: 0 0 0 0 hsl(var(--primary) / 0.6); }
-    70% { box-shadow: 0 0 0 8px hsl(var(--primary) / 0); }
+    0%   { box-shadow: 0 0 0 0 hsl(var(--primary) / 0.6); }
+    70%  { box-shadow: 0 0 0 10px hsl(var(--primary) / 0); }
     100% { box-shadow: 0 0 0 0 hsl(var(--primary) / 0); }
+  }
+
+  /* Aurora drift on hero */
+  .aurora-drift {
+    animation: aurora-drift 18s ease-in-out infinite alternate;
+  }
+  @keyframes aurora-drift {
+    0%   { transform: translate3d(0,0,0) scale(1); opacity: 0.9; }
+    100% { transform: translate3d(2%, -2%, 0) scale(1.05); opacity: 1; }
+  }
+
+  /* Marquee for the persona strip */
+  .animate-marquee {
+    animation: marquee 40s linear infinite;
+  }
+  @keyframes marquee {
+    0%   { transform: translateX(0); }
+    100% { transform: translateX(-50%); }
+  }
+
+  /* Fade in */
+  .animate-fade-in {
+    animation: fade-in 0.5s ease-out both;
+  }
+  @keyframes fade-in {
+    from { opacity: 0; transform: translateY(8px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  /* Story link underline */
+  .story-link {
+    @apply relative inline-block after:content-[''] after:absolute after:w-full after:scale-x-0 after:h-px after:bottom-0 after:left-0 after:bg-primary after:origin-bottom-right after:transition-transform after:duration-300 hover:after:scale-x-100 hover:after:origin-bottom-left;
   }
 }
