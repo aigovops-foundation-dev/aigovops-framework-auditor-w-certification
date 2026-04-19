@@ -36,14 +36,14 @@ const Agents = () => {
 
         {/* Chief — featured */}
         <section className="mt-8">
-          <div className="text-[10px] font-mono uppercase tracking-[0.2em] text-amber-400/80 mb-2">
+          <div className="text-[10px] font-mono uppercase tracking-[0.2em] text-warning/80 mb-2">
             Chief Auditor
           </div>
           <div className="grid lg:grid-cols-3 gap-5">
             <div className="lg:col-span-1">
               <PersonaCard persona={chief} />
             </div>
-            <div className="lg:col-span-2 rounded-xl border border-amber-400/20 bg-card-grad p-6">
+            <div className="lg:col-span-2 rounded-xl border border-warning/20 bg-card-grad p-6">
               <h2 className="text-xl font-semibold tracking-tight">
                 {chief.display_name}, {chief.role_title}
               </h2>

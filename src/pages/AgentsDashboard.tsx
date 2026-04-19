@@ -31,18 +31,18 @@ import { formatDistanceToNow } from "date-fns";
 
 const sevTone: Record<string, string> = {
   info: "bg-muted text-muted-foreground border-border",
-  low: "bg-emerald-500/10 text-emerald-300 border-emerald-500/20",
-  medium: "bg-amber-400/10 text-amber-300 border-amber-400/30",
-  high: "bg-orange-500/10 text-orange-300 border-orange-500/30",
-  critical: "bg-red-500/10 text-red-300 border-red-500/30",
+  low: "bg-primary/10 text-primary border-primary/20",
+  medium: "bg-warning/10 text-warning border-warning/30",
+  high: "bg-warning/15 text-warning border-warning/40",
+  critical: "bg-destructive/10 text-destructive border-destructive/30",
 };
 
 const decisionTone: Record<string, string> = {
-  pass: "text-emerald-300",
-  fail: "text-red-300",
-  warn: "text-amber-300",
+  pass: "text-primary",
+  fail: "text-destructive",
+  warn: "text-warning",
   info: "text-muted-foreground",
-  escalated: "text-orange-300",
+  escalated: "text-warning",
 };
 
 const AgentsDashboard = () => {
@@ -144,7 +144,7 @@ const AgentsDashboard = () => {
           <section className="lg:col-span-2 rounded-xl border border-border bg-card-grad">
             <header className="p-4 border-b border-border flex items-center justify-between">
               <div>
-                <div className="text-[10px] font-mono uppercase tracking-wider text-amber-300/90">
+                <div className="text-[10px] font-mono uppercase tracking-wider text-warning">
                   Human in the Loop
                 </div>
                 <h2 className="text-base font-semibold mt-0.5">Review Queue</h2>
@@ -264,7 +264,7 @@ const AgentsDashboard = () => {
                             {d.action} → {d.decision}
                           </span>
                           {d.needs_human && (
-                            <Badge className="bg-amber-400/15 text-amber-300 border-amber-400/30 font-mono text-[10px]">
+                            <Badge className="bg-warning/15 text-warning border-warning/30 font-mono text-[10px]">
                               HITL
                             </Badge>
                           )}

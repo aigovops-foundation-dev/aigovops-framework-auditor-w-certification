@@ -22,11 +22,11 @@ export const PersonaCard = ({ persona }: { persona: PersonaMeta }) => {
     <article
       className={`group relative overflow-hidden rounded-xl border bg-card-grad transition-all hover:-translate-y-0.5 ${
         isChief
-          ? "border-amber-400/40 shadow-[0_0_0_1px_hsl(45_70%_55%/0.25),0_18px_40px_-20px_hsl(45_70%_55%/0.45)]"
+          ? "border-warning/40 shadow-[0_0_0_1px_hsl(var(--warning)/0.25),0_18px_40px_-20px_hsl(var(--warning)/0.45)]"
           : "border-border hover:border-primary/40"
       }`}
     >
-      <div className="aspect-square w-full overflow-hidden bg-black">
+      <div className="aspect-square w-full overflow-hidden bg-background">
         <img
           src={persona.portrait}
           alt={`${persona.display_name} — ${persona.role_title}`}
@@ -42,7 +42,7 @@ export const PersonaCard = ({ persona }: { persona: PersonaMeta }) => {
         <div className="flex items-start justify-between gap-2">
           <div>
             <div className="flex items-center gap-2">
-              <Icon className={`h-4 w-4 ${isChief ? "text-amber-400" : "text-primary"}`} />
+              <Icon className={`h-4 w-4 ${isChief ? "text-warning" : "text-primary"}`} />
               <h3 className="text-lg font-semibold tracking-tight">{persona.display_name}</h3>
             </div>
             <div className="mt-0.5 text-xs font-mono text-muted-foreground">
@@ -50,7 +50,7 @@ export const PersonaCard = ({ persona }: { persona: PersonaMeta }) => {
             </div>
           </div>
           {isChief && (
-            <Badge className="bg-amber-400/15 text-amber-300 border border-amber-400/30 font-mono text-[10px] uppercase tracking-wider">
+            <Badge className="bg-warning/15 text-warning border border-warning/30 font-mono text-[10px] uppercase tracking-wider">
               Chief
             </Badge>
           )}
@@ -84,7 +84,7 @@ export const PersonaCard = ({ persona }: { persona: PersonaMeta }) => {
           <ul className="space-y-1">
             {persona.guardrails.map((g) => (
               <li key={g} className="flex items-start gap-1.5 text-[11px] font-mono text-foreground/80">
-                <span className="mt-1 h-1 w-1 rounded-full bg-amber-400/70 shrink-0" />
+                <span className="mt-1 h-1 w-1 rounded-full bg-warning/70 shrink-0" />
                 <span>{g}</span>
               </li>
             ))}
