@@ -3,7 +3,7 @@ import { Link, useNavigate, useParams } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import {
-  Pause, Play, RotateCcw, ArrowRight, Crown, Stamp, ChevronLeft, ArrowLeft, ArrowRight as ArrowRightIcon,
+  Pause, Play, RotateCcw, ArrowRight, Crown, Stamp, ChevronLeft, ArrowLeft, ArrowRight as ArrowRightIcon, MousePointerClick,
 } from "lucide-react";
 import { DEMOS, demoBySlug, type DemoBeat } from "@/data/demo-scenarios";
 import { portraitFor, personaBySlug } from "@/data/agent-personas";
@@ -20,7 +20,7 @@ const sevTone: Record<string, string> = {
 const Demo = () => {
   const { scenario } = useParams<{ scenario?: string }>();
   const nav = useNavigate();
-  const demo = useMemo(() => demoBySlug(scenario ?? "enterprise_oss") ?? DEMOS[0], [scenario]);
+  const demo = useMemo(() => demoBySlug(scenario ?? "healthcare_insurance") ?? DEMOS[0], [scenario]);
 
   usePageMeta({
     title: `${demo.label} — animated audit demo`,
