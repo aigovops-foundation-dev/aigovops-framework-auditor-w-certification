@@ -30,6 +30,10 @@ export interface DemoBeat {
   youDo?: string;
   /** Short label for the step (e.g. "Pick your problem"). */
   stepLabel?: string;
+  /** For `cta` beat: the route to navigate to on click. */
+  ctaTo?: string;
+  /** For `cta` beat: the button label. */
+  ctaLabel?: string;
 }
 
 export interface DemoScenario {
