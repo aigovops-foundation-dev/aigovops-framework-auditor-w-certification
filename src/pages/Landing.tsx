@@ -172,6 +172,43 @@ const Landing = () => {
                 </div>
               </div>
             </div>
+
+            {/* About the Foundation — stewardship visible above the fold */}
+            <div className="mt-4 rounded-2xl border border-border bg-glass shadow-elev p-4">
+              <div className="flex items-start gap-3">
+                <div className="h-9 w-9 shrink-0 rounded-lg bg-emerald-grad grid place-items-center shadow-glow">
+                  <ShieldCheck className="h-4 w-4 text-primary-foreground" />
+                </div>
+                <div className="flex-1 min-w-0">
+                  <div className="text-[10px] font-mono uppercase tracking-wider text-muted-foreground">
+                    Stewarded by
+                  </div>
+                  <a
+                    href={FOUNDATION.url}
+                    target="_blank"
+                    rel="noreferrer"
+                    className="text-sm font-semibold hover:text-primary transition-colors story-link"
+                  >
+                    {FOUNDATION.name}
+                  </a>
+                  <div className="mt-1.5 text-[11px] text-muted-foreground leading-snug">
+                    Co-founded by{" "}
+                    {FOUNDATION.cofounders.map((c, i) => (
+                      <span key={c.email}>
+                        {i > 0 && " · "}
+                        <span className="text-foreground/90">{c.name}</span>
+                      </span>
+                    ))}
+                  </div>
+                  <Link
+                    to="/about"
+                    className="mt-2 inline-flex items-center gap-1 text-[11px] font-mono text-primary hover:underline"
+                  >
+                    Meet the stewards <ArrowRight className="h-3 w-3" />
+                  </Link>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
       </section>
