@@ -7,6 +7,15 @@ this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 ## [Unreleased]
 
 ### Added
+- **Open-source community launch.** Project formally stewarded by the
+  [AiGovOps Foundation](https://www.aigovopsfoundation.org/), co-founded by
+  Bob Rapp (`bob.rapp@aigovops.community`, Co-founder & Technical Steward) and
+  Ken Johnston (`ken.johnston@aigovops.community`, Co-founder & Governance
+  Steward). Co-founder credits added to README, NOTICE, governance docs,
+  in-app footer, and a new public `/about` page.
+- Centralized co-founder metadata in `src/lib/config.ts` (`FOUNDATION.cofounders`).
+- `package.json` metadata updated for OSS publishing (name, version, license,
+  repository, homepage, contributors, keywords).
 - Public **PRD & Docs** hub on the landing page (`/docs`, `/docs/prd`,
   `/docs/prd-faq`, `/docs/aos-spec`)
 - Versioned, machine-readable AOS spec at `public/specs/aos-v1.0.yaml`

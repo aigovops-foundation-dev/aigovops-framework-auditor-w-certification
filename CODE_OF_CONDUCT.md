@@ -37,6 +37,11 @@ Examples of unacceptable behavior:
 Instances of abusive, harassing, or otherwise unacceptable behavior may be
 reported to the project maintainers at **conduct@aigovopsfoundation.org**.
 
+For escalation, reports may also be sent directly to the Foundation co-founders:
+
+- Bob Rapp — `bob.rapp@aigovops.community`
+- Ken Johnston — `ken.johnston@aigovops.community`
+
 All complaints will be reviewed and investigated promptly and fairly. The
 project team is obligated to maintain confidentiality with regard to the
 reporter of an incident.

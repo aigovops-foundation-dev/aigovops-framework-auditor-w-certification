@@ -13,6 +13,11 @@ analyst), lets a chartered human reviewer issue an Attestation of Conformance
 (AOC), and writes every step into an HMAC-SHA256 audit chain that anyone can
 verify in one click.
 
+Stewarded by the **[AiGovOps Foundation](https://www.aigovopsfoundation.org/)**,
+co-founded by **Bob Rapp** (Co-founder & Technical Steward,
+`bob.rapp@aigovops.community`) and **Ken Johnston** (Co-founder & Governance
+Steward, `ken.johnston@aigovops.community`).
+
 ## Documentation
 
 All project artifacts are published in-app at `/docs`:
