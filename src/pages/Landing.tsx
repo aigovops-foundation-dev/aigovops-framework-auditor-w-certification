@@ -120,8 +120,8 @@ const Landing = () => {
                   ))}
                 </div>
 
-                {/* Specialists grid */}
-                <div className="grid grid-cols-4 gap-3 flex-1 content-start">
+                {/* Specialists grid — push to bottom of the card so portraits aren't stranded mid-air */}
+                <div className="grid grid-cols-4 gap-y-3 gap-x-2 flex-1 content-end">
                   {["turing", "kerckhoffs", "nightingale", "lovelace", "hopper", "pacioli", "arendt", "hamilton"].map((slug) => (
                     <Link key={slug} to="/agents" className="group">
                       <PersonaAvatar slug={slug} size="md" className="mx-auto group-hover:scale-105 transition-transform" />
