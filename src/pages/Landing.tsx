@@ -98,7 +98,7 @@ const Landing = () => {
 
           {/* Right: agent council collage */}
           <div className="lg:col-span-5 relative">
-            <div className="relative aspect-[4/5] rounded-3xl border border-border bg-glass shadow-elev overflow-hidden p-6">
+            <div className="relative lg:aspect-[4/5] rounded-3xl border border-border bg-glass shadow-elev overflow-hidden p-6">
               <div className="absolute inset-0 bg-gradient-to-br from-secondary/20 via-transparent to-primary/20 pointer-events-none" />
               <div className="relative h-full flex flex-col">
                 <div className="text-[10px] font-mono uppercase tracking-wider text-muted-foreground mb-4 flex items-center gap-2">
