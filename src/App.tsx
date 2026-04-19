@@ -15,6 +15,7 @@ import Landing from "./pages/Landing";
 const Auth = lazy(() => import("./pages/Auth"));
 const Donate = lazy(() => import("./pages/Donate"));
 const About = lazy(() => import("./pages/About"));
+const Security = lazy(() => import("./pages/Security"));
 const Dashboard = lazy(() => import("./pages/Dashboard"));
 const Submit = lazy(() => import("./pages/Submit"));
 const ReviewDetail = lazy(() => import("./pages/ReviewDetail"));
@@ -66,6 +67,7 @@ const App = () => (
               <Route path="/auth" element={<Auth />} />
               <Route path="/donate" element={<Donate />} />
               <Route path="/about" element={<About />} />
+              <Route path="/security" element={<Security />} />
               <Route path="/registry" element={<Registry />} />
               <Route path="/verify/:reviewId" element={<Verify />} />
               <Route path="/docs" element={<Docs />} />
