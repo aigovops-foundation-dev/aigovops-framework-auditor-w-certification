@@ -25,6 +25,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { useQueryClient } from "@tanstack/react-query";
 import { formatDistanceToNow } from "date-fns";
 import { PortraitStage } from "@/components/agents/PortraitStage";
+import { JourneyStepper } from "@/components/journey/JourneyStepper";
 
 type Scenario = "enterprise_oss" | "healthcare_codegen" | "generative_ip" | "hr_behavior" | "general";
 
